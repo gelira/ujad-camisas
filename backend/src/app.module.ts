@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { AppService } from './app.service';
 import { LoginController } from './controllers/login.controller';
+import { GoogleService } from './services/google.service';
 
 @Module({
   imports: [
@@ -11,6 +11,6 @@ import { LoginController } from './controllers/login.controller';
     MongooseModule.forRoot('mongodb://localhost/ujad-camisas'),
   ],
   controllers: [LoginController],
-  providers: [AppService],
+  providers: [GoogleService],
 })
 export class AppModule {}
