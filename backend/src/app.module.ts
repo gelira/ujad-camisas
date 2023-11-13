@@ -8,6 +8,7 @@ import { GoogleService } from './services/google.service';
 import { User, UserSchema } from './schemas/user.schema';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
+import { Setor, SetorSchema } from './schemas/setor.schema';
 
 @Module({
   imports: [
@@ -19,7 +20,10 @@ import { AuthService } from './services/auth.service';
         uri: configService.get<string>('MONGO_DB_URI'),
       }),
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Setor.name, schema: SetorSchema },
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

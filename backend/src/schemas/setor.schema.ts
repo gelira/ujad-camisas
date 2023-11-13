@@ -1,16 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-@Schema()
+@Schema({
+  collection: 'setores',
+  timestamps: true,
+})
 export class Setor {
   @Prop()
-  name: string;
+  nome: string;
 
-  @Prop()
-  age: number;
+  @Prop([String])
+  responsaveis: string[];
 
-  @Prop()
-  breed: string;
+  @Prop(() => Date)
+  createdAt: Date;
+
+  @Prop(() => Date)
+  updatedAt: Date;
 }
 
 export type SetorDocument = HydratedDocument<Setor>;
