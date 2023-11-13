@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import Login from '@/components/Login.vue'
-import TheWelcome from '../components/TheWelcome.vue'
+const text = 'Hello, World!'
 </script>
 
 <template>
-  <main>
-    <Login />
-    <TheWelcome />
-  </main>
+  <h1>{{ text }}</h1>
 </template>

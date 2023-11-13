@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 
-import { apiClient } from '../api'
+import { apiClient } from '@/api'
 import { ACCESS_TOKEN_LOCAL_STORAGE } from '@/consts'
 
 export function useAuth() {
