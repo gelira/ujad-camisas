@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterView } from 'vue-router'
 
 import { useAuth } from '@/composables/auth'
 
@@ -10,11 +10,12 @@ const { validateAccessToken } = useAuth()
 
 onMounted(() => {
   validateAccessToken()
-    .then(() => {})
-    .catch(() => router.push('/login'))
+    .then(() => router.push({ name: 'setores' }))
+    .catch(() => router.push({ name: 'login '}))
 })
 </script>
 
 <template>
   <h1>Hello, World!</h1>
+  <RouterView />
 </template>

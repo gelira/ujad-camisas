@@ -12,13 +12,13 @@ const { validateGoogleToken, getToken } = useAuth()
 
 const callback: CallbackTypes.CredentialCallback = ({ credential }) => {
   validateGoogleToken(credential)
-    .then(() => router.push('/'))
+    .then(() => router.push({ name: 'home' }))
     .catch(() => {})
 }
 
 onMounted(() => {
   if (getToken()) {
-    router.push('/')
+    router.push({ name: 'home' })
   }
 })
 </script>
