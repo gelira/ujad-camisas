@@ -6,7 +6,7 @@ export class CreateCamisaDTO {
   setorId: string;
 
   @IsString()
-  pessoa: string;
+  nomePessoa: string;
 
   @IsString()
   @IsNotEmpty()

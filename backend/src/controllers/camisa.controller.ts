@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
 import { CreateCamisaDTO } from 'src/dto/camisa.dto';
 
@@ -34,6 +34,39 @@ export class CamisaController {
       createCamisaDTO.tamanhoId,
     );
 
-    return this.camisaService.create(createCamisaDTO, modelo, tamanho);
+    await this.camisaService.create(createCamisaDTO, modelo, tamanho);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('list')
+  async listCamisas(
+    @RequestUser() user: UserDocument,
+    @Query('setorId') setorId: string,
+  ) {
+    await this.setorService.findById(setorId, !user.admin && user.id);
+
+    const camisas = (await this.camisaService.findBySetor(setorId)).map(
+      ({
+        id,
+        nomePessoa,
+        modeloId,
+        modeloDescricao,
+        modeloValor,
+        totalPago,
+        tamanhoId,
+        tamanhoDescricao,
+      }) => ({
+        id,
+        nomePessoa,
+        modeloId,
+        modeloDescricao,
+        modeloValor,
+        totalPago,
+        tamanhoId,
+        tamanhoDescricao,
+      }),
+    );
+
+    return { camisas };
   }
 }

@@ -24,4 +24,8 @@ export class CamisaService {
 
     return camisa.save();
   }
+
+  async findBySetor(setorId: string) {
+    return this.camisaModel.find({ setorId });
+  }
 }

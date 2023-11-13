@@ -9,7 +9,7 @@ export class Camisa {
   setorId: string;
 
   @Prop()
-  pessoa: string;
+  nomePessoa: string;
 
   @Prop()
   modeloId: string;
