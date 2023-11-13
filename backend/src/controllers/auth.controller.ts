@@ -2,13 +2,18 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { RequestUser } from 'src/decorators/request-user.decorator';
 
 import { AuthDTO } from 'src/dto/auth.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { User } from 'src/schemas/user.schema';
 import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
 import { UserService } from 'src/services/user.service';
@@ -20,6 +25,12 @@ export class AuthController {
     private userService: UserService,
     private authService: AuthService,
   ) {}
+
+  @UseGuards(AuthGuard)
+  @Get('user-info')
+  info(@RequestUser() user: User) {
+    return user;
+  }
 
   @Post('google')
   @HttpCode(HttpStatus.OK)

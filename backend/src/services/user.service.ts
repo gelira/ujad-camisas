@@ -7,6 +7,10 @@ import { User } from 'src/schemas/user.schema';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
+  async findById(id: any) {
+    return this.userModel.findById(id);
+  }
+
   async findByEmail(email: string) {
     return this.userModel.findOne({ email });
   }
