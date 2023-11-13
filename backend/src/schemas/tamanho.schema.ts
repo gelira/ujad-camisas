@@ -6,7 +6,7 @@ import { HydratedDocument } from 'mongoose';
 })
 export class Tamanho {
   @Prop()
-  tamanho: string;
+  descricao: string;
 
   @Prop(() => Date)
   createdAt: Date;

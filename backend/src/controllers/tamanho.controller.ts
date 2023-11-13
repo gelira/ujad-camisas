@@ -11,7 +11,7 @@ export class TamanhoController {
   @Get('list')
   async listTamanhoes() {
     const tamanhos = (await this.tamanhoService.findAll()).map(
-      ({ id, tamanho }) => ({ id, tamanho }),
+      ({ id, descricao }) => ({ id, descricao }),
     );
 
     return { tamanhos };
