@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class LoginGoogleDTO {
+export class AuthDTO {
   @IsString()
   @IsNotEmpty()
   token: string;

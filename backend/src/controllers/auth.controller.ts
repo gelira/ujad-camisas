@@ -6,26 +6,26 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { LoginGoogleDTO } from 'src/dto/login-google.dto';
+import { AuthDTO } from 'src/dto/auth.dto';
+import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
 import { ResponsavelService } from 'src/services/responsavel.service';
 
-@Controller('login')
-export class LoginController {
+@Controller('auth')
+export class AuthController {
   constructor(
     private googleService: GoogleService,
     private responsavelService: ResponsavelService,
+    private authService: AuthService
   ) {}
 
   @Post('google')
-  async loginWithGoogleToken(@Body() loginGoogleDTO: LoginGoogleDTO) {
+  async authGoogle(@Body() authDTO: AuthDTO) {
     let email = '';
     let name = '';
 
     try {
-      const validation = await this.googleService.validateToken(
-        loginGoogleDTO.token,
-      );
+      const validation = await this.googleService.validateToken(authDTO.token);
 
       email = validation.email;
       name = validation.name;
@@ -45,6 +45,8 @@ export class LoginController {
       await responsavel.save();
     }
 
-    return responsavel;
+    const token = await this.authService.generateToken(responsavel.id);
+
+    return { token };
   }
 }
