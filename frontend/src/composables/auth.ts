@@ -3,6 +3,12 @@ import { reactive } from 'vue'
 import { apiClient } from '@/api'
 import { ACCESS_TOKEN_LOCAL_STORAGE } from '@/consts'
 
+interface UserInfo {
+  nome: string
+  email: string
+  admin: boolean
+}
+
 export function useAuth() {
   const auth = reactive({ nome: '', email: '', admin: false })
   
@@ -27,8 +33,7 @@ export function useAuth() {
 
   const validateAccessToken = async () => {
     try {
-      const { data } = await apiClient()
-        .get<{ nome: string, email: string, admin: boolean }>('/auth/user-info')
+      const { data } = await apiClient().get<UserInfo>('/auth/user-info')
 
       auth.nome = data.nome
       auth.email = data.email
