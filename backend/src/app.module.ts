@@ -11,6 +11,9 @@ import { AuthService } from './services/auth.service';
 import { Setor, SetorSchema } from './schemas/setor.schema';
 import { SetorService } from './services/setor.service';
 import { SetorController } from './controllers/setor.controller';
+import { Modelo, ModeloSchema } from './schemas/modelo.schema';
+import { ModeloService } from './services/modelo.service';
+import { ModeloController } from './controllers/modelo.controller';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { SetorController } from './controllers/setor.controller';
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Setor.name, schema: SetorSchema },
+      { name: Modelo.name, schema: ModeloSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -36,7 +40,13 @@ import { SetorController } from './controllers/setor.controller';
       }),
     }),
   ],
-  controllers: [AuthController, SetorController],
-  providers: [GoogleService, UserService, AuthService, SetorService],
+  controllers: [AuthController, SetorController, ModeloController],
+  providers: [
+    GoogleService,
+    UserService,
+    AuthService,
+    SetorService,
+    ModeloService,
+  ],
 })
 export class AppModule {}
