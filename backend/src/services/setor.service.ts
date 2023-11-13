@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Setor } from 'src/schemas/setor.schema';
 
@@ -13,5 +13,15 @@ export class SetorService {
 
   async findByResponsavel(id: any) {
     return this.setorModel.find({ responsaveis: id });
+  }
+
+  async findById(id: any, responsavel: any) {
+    const setor = await this.setorModel.findById(id);
+
+    if (!setor || (responsavel && !setor.responsaveis.includes(responsavel))) {
+      throw new NotFoundException('Setor not found');
+    }
+
+    return setor;
   }
 }
