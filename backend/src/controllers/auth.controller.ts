@@ -1,12 +1,10 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
@@ -29,29 +27,19 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('user-info')
   info(@RequestUser() user: User) {
-    return user;
+    const { nome, email, admin } = user;
+
+    return { nome, email, admin };
   }
 
   @Post('google')
   @HttpCode(HttpStatus.OK)
   async authGoogle(@Body() authDTO: AuthDTO) {
-    let email = '';
-    let name = '';
-
-    try {
-      const validation = await this.googleService.validateToken(authDTO.token);
-
-      email = validation.email;
-      name = validation.name;
-    } catch {
-      throw new BadRequestException('Invalid token');
-    }
+    const { email, name } = await this.googleService.validateToken(
+      authDTO.token,
+    );
 
     const user = await this.userService.findByEmail(email);
-
-    if (!user) {
-      throw new UnauthorizedException('User not registered');
-    }
 
     if (!user.nome) {
       user.nome = name;

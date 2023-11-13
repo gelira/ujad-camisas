@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 
@@ -7,16 +7,20 @@ export class GoogleService {
   constructor(private configService: ConfigService) {}
 
   async validateToken(token: string) {
-    const CLIENT_ID = this.configService.get<string>('GOOGLE_CLIENT_ID');
-    const client = new OAuth2Client();
+    try {
+      const CLIENT_ID = this.configService.get<string>('GOOGLE_CLIENT_ID');
+      const client = new OAuth2Client();
 
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: CLIENT_ID,
-    });
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: CLIENT_ID,
+      });
 
-    const { email, name } = ticket.getPayload();
+      const { email, name } = ticket.getPayload();
 
-    return { email, name };
+      return { email, name };
+    } catch {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
