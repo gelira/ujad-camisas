@@ -1,16 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class Tamanho {
   @Prop()
-  name: string;
+  tamanho: string;
 
-  @Prop()
-  age: number;
+  @Prop(() => Date)
+  createdAt: Date;
 
-  @Prop()
-  breed: string;
+  @Prop(() => Date)
+  updatedAt: Date;
 }
 
 export type TamanhoDocument = HydratedDocument<Tamanho>;

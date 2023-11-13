@@ -10,13 +10,13 @@ export class ModeloController {
   @UseGuards(AuthGuard)
   @Get('list')
   async listSetores() {
-    const listModelos = await this.modeloService.findAll();
-
-    const modelos = listModelos.map(({ id, descricao, valor }) => ({
-      id,
-      descricao,
-      valor,
-    }));
+    const modelos = (await this.modeloService.findAll()).map(
+      ({ id, descricao, valor }) => ({
+        id,
+        descricao,
+        valor,
+      }),
+    );
 
     return { modelos };
   }

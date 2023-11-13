@@ -14,6 +14,9 @@ import { SetorController } from './controllers/setor.controller';
 import { Modelo, ModeloSchema } from './schemas/modelo.schema';
 import { ModeloService } from './services/modelo.service';
 import { ModeloController } from './controllers/modelo.controller';
+import { Tamanho, TamanhoSchema } from './schemas/tamanho.schema';
+import { TamanhoService } from './services/tamanho.service';
+import { TamanhoController } from './controllers/tamanho.controller';
 
 @Module({
   imports: [
@@ -29,6 +32,7 @@ import { ModeloController } from './controllers/modelo.controller';
       { name: User.name, schema: UserSchema },
       { name: Setor.name, schema: SetorSchema },
       { name: Modelo.name, schema: ModeloSchema },
+      { name: Tamanho.name, schema: TamanhoSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -40,13 +44,19 @@ import { ModeloController } from './controllers/modelo.controller';
       }),
     }),
   ],
-  controllers: [AuthController, SetorController, ModeloController],
+  controllers: [
+    AuthController,
+    SetorController,
+    ModeloController,
+    TamanhoController,
+  ],
   providers: [
     GoogleService,
     UserService,
     AuthService,
     SetorService,
     ModeloService,
+    TamanhoService,
   ],
 })
 export class AppModule {}
