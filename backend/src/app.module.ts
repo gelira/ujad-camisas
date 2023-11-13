@@ -9,6 +9,8 @@ import { User, UserSchema } from './schemas/user.schema';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 import { Setor, SetorSchema } from './schemas/setor.schema';
+import { SetorService } from './services/setor.service';
+import { SetorController } from './controllers/setor.controller';
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { Setor, SetorSchema } from './schemas/setor.schema';
       }),
     }),
   ],
-  controllers: [AuthController],
-  providers: [GoogleService, UserService, AuthService],
+  controllers: [AuthController, SetorController],
+  providers: [GoogleService, UserService, AuthService, SetorService],
 })
 export class AppModule {}
