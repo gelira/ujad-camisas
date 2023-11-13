@@ -5,8 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AuthController } from './controllers/auth.controller';
 import { GoogleService } from './services/google.service';
-import { Responsavel, ResponsavelSchema } from './schemas/responsavel.schema';
-import { ResponsavelService } from './services/responsavel.service';
+import { User, UserSchema } from './schemas/user.schema';
+import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 
 @Module({
@@ -19,9 +19,7 @@ import { AuthService } from './services/auth.service';
         uri: configService.get<string>('MONGO_DB_URI'),
       }),
     }),
-    MongooseModule.forFeature([
-      { name: Responsavel.name, schema: ResponsavelSchema },
-    ]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -33,6 +31,6 @@ import { AuthService } from './services/auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [GoogleService, ResponsavelService, AuthService],
+  providers: [GoogleService, UserService, AuthService],
 })
 export class AppModule {}

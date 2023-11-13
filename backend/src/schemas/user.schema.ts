@@ -2,15 +2,17 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
 @Schema({
-  collection: 'responsaveis',
   timestamps: true,
 })
-export class Responsavel {
+export class User {
   @Prop()
   nome: string;
 
   @Prop()
   email: string;
+
+  @Prop()
+  admin: boolean;
 
   @Prop(() => Date)
   createdAt: Date;
@@ -19,6 +21,6 @@ export class Responsavel {
   updatedAt: Date;
 }
 
-export type ResponsavelDocument = HydratedDocument<Responsavel>;
+export type UserDocument = HydratedDocument<User>;
 
-export const ResponsavelSchema = SchemaFactory.createForClass(Responsavel);
+export const UserSchema = SchemaFactory.createForClass(User);

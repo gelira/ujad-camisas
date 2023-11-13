@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,17 +11,18 @@ import {
 import { AuthDTO } from 'src/dto/auth.dto';
 import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
-import { ResponsavelService } from 'src/services/responsavel.service';
+import { UserService } from 'src/services/user.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private googleService: GoogleService,
-    private responsavelService: ResponsavelService,
-    private authService: AuthService
+    private userService: UserService,
+    private authService: AuthService,
   ) {}
 
   @Post('google')
+  @HttpCode(HttpStatus.OK)
   async authGoogle(@Body() authDTO: AuthDTO) {
     let email = '';
     let name = '';
@@ -33,19 +36,19 @@ export class AuthController {
       throw new BadRequestException('Invalid token');
     }
 
-    const responsavel = await this.responsavelService.findByEmail(email);
+    const user = await this.userService.findByEmail(email);
 
-    if (!responsavel) {
+    if (!user) {
       throw new UnauthorizedException('User not registered');
     }
 
-    if (!responsavel.nome) {
-      responsavel.nome = name;
+    if (!user.nome) {
+      user.nome = name;
 
-      await responsavel.save();
+      await user.save();
     }
 
-    const token = await this.authService.generateToken(responsavel.id);
+    const token = await this.authService.generateToken(user.id);
 
     return { token };
   }
