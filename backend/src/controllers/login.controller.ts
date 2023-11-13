@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 
 import { LoginGoogleDTO } from 'src/dto/login-google.dto';
 import { GoogleService } from 'src/services/google.service';
@@ -9,6 +9,10 @@ export class LoginController {
 
   @Post('google')
   async loginWithGoogleToken(@Body() loginGoogleDTO: LoginGoogleDTO) {
-    return await this.googleService.validateToken(loginGoogleDTO.token);
+    try {
+      return await this.googleService.validateToken(loginGoogleDTO.token);
+    } catch {
+      throw new BadRequestException('Invalid token');
+    }
   }
 }
