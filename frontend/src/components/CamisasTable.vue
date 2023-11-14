@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useCamisas } from '@/composables/camisa'
 
+const emit = defineEmits<{
+  (e: 'edit', id: string): void,
+  (e: 'delete', id: string): void
+}>()
+
 const { camisas } = useCamisas()
 
 const headers = [
@@ -70,13 +75,13 @@ const pageOptions = [
         </template>
 
         <v-list>
-          <v-list-item>
+          <v-list-item @click="emit('edit', item.id)">
             <template v-slot:append>
               <v-icon icon="mdi-pencil"></v-icon>
             </template>
             <v-list-item-title>Editar</v-list-item-title>
           </v-list-item>
-          <v-list-item>
+          <v-list-item @click="emit('delete', item.id)">
             <template v-slot:append>
               <v-icon icon="mdi-delete"></v-icon>
             </template>
