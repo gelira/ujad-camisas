@@ -5,11 +5,12 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
-import { CreateCamisaDTO } from 'src/dto/camisa.dto';
+import { CreateCamisaDTO, UpdateCamisaDTO } from 'src/dto/camisa.dto';
 
 import { AuthGuard } from 'src/guards/auth.guard';
 import { UserDocument } from 'src/schemas/user.schema';
@@ -80,8 +81,29 @@ export class CamisaController {
   }
 
   @UseGuards(AuthGuard)
+  @Put(':id')
+  async updateCamisa(
+    @RequestUser() user: UserDocument,
+    @Param('id') id: string,
+    @Body() updateCamisaDTO: UpdateCamisaDTO,
+  ) {
+    const camisa = await this.camisaService.findById(id);
+
+    if (!user.admin) {
+      await this.setorService.findById(camisa.setorId, !user.admin && user.id);
+    }
+
+    const modelo = await this.modeloService.findById(updateCamisaDTO.modeloId);
+    const tamanho = await this.tamanhoService.findById(
+      updateCamisaDTO.tamanhoId,
+    );
+
+    await this.camisaService.update(camisa, updateCamisaDTO, modelo, tamanho);
+  }
+
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  async deleteCamisaa(
+  async deleteCamisa(
     @RequestUser() user: UserDocument,
     @Param('id') id: string,
   ) {

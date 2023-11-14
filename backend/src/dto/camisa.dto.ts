@@ -20,3 +20,20 @@ export class CreateCamisaDTO {
   @IsNotEmpty()
   tamanhoId: string;
 }
+
+export class UpdateCamisaDTO {
+  @IsString()
+  nomePessoa: string;
+
+  @IsString()
+  @IsNotEmpty()
+  modeloId: string;
+
+  @IsNumber()
+  @Min(0)
+  totalPago: number;
+
+  @IsString()
+  @IsNotEmpty()
+  tamanhoId: string;
+}

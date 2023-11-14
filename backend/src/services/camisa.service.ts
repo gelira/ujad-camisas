@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Camisa, CamisaDocument } from 'src/schemas/camisa.schema';
-import { CreateCamisaDTO } from 'src/dto/camisa.dto';
+import { CreateCamisaDTO, UpdateCamisaDTO } from 'src/dto/camisa.dto';
 import { Modelo } from 'src/schemas/modelo.schema';
 import { Tamanho } from 'src/schemas/tamanho.schema';
 
@@ -23,6 +23,23 @@ export class CamisaService {
     });
 
     return camisa.save();
+  }
+
+  async update(
+    camisa: CamisaDocument,
+    updateCamisaDTO: UpdateCamisaDTO,
+    modelo: Modelo,
+    tamanho: Tamanho,
+  ) {
+    camisa.nomePessoa = updateCamisaDTO.nomePessoa;
+    camisa.modeloId = updateCamisaDTO.modeloId;
+    camisa.modeloDescricao = modelo.descricao;
+    camisa.modeloValor = modelo.valor;
+    camisa.totalPago = updateCamisaDTO.totalPago;
+    camisa.tamanhoId = updateCamisaDTO.tamanhoId;
+    camisa.tamanhoDescricao = tamanho.descricao;
+
+    await camisa.save();
   }
 
   async findById(id: string) {
