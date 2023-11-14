@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useCamisas } from '@/composables/camisa'
 
-const route = useRoute()
+const { camisas } = useCamisas()
 </script>
 
 <template>
-  <p>{{ route.params.id }}</p>
+  <ul>
+    <li v-for="camisa in camisas" :key="camisa.id">
+      {{ camisa.nomePessoa }}
+    </li>
+  </ul>
 </template>
