@@ -8,11 +8,13 @@ export class SetorService {
   constructor(@InjectModel(Setor.name) private setorModel: Model<Setor>) {}
 
   async findAll() {
-    return this.setorModel.find({});
+    return this.setorModel.find({}).sort({ nome: 1, createdAt: 1 });
   }
 
   async findByResponsavel(id: any) {
-    return this.setorModel.find({ responsaveis: id });
+    return this.setorModel
+      .find({ responsaveis: id })
+      .sort({ nome: 1, createdAt: 1 });
   }
 
   async findById(id: any, responsavel: any) {

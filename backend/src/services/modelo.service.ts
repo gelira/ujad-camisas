@@ -8,7 +8,7 @@ export class ModeloService {
   constructor(@InjectModel(Modelo.name) private modeloModel: Model<Modelo>) {}
 
   async findAll() {
-    return this.modeloModel.find({});
+    return this.modeloModel.find({}).sort({ descricao: 1, createdAt: 1 });
   }
 
   async findById(id: any) {

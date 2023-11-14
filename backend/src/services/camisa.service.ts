@@ -26,6 +26,8 @@ export class CamisaService {
   }
 
   async findBySetor(setorId: string) {
-    return this.camisaModel.find({ setorId });
+    return this.camisaModel
+      .find({ setorId })
+      .sort({ nomePessoa: 1, createdAt: 1 });
   }
 }
