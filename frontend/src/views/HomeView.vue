@@ -11,7 +11,7 @@ const { validateAccessToken } = useAuth()
 onMounted(() => {
   validateAccessToken()
     .then(() => router.push({ name: 'setores' }))
-    .catch(() => router.push({ name: 'login '}))
+    .catch(() => router.push({ name: 'login' }))
 })
 </script>
 
