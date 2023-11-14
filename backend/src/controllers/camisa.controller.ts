@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
 import { CreateCamisaDTO } from 'src/dto/camisa.dto';
 
@@ -68,5 +77,20 @@ export class CamisaController {
     );
 
     return { camisas };
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async deleteCamisaa(
+    @RequestUser() user: UserDocument,
+    @Param('id') id: string,
+  ) {
+    const camisa = await this.camisaService.findById(id);
+
+    if (!user.admin) {
+      await this.setorService.findById(camisa.setorId, user.id);
+    }
+
+    await this.camisaService.softDelete(camisa);
   }
 }

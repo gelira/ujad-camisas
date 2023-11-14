@@ -34,6 +34,12 @@ export class Camisa {
 
   @Prop(() => Date)
   updatedAt: Date;
+
+  @Prop({
+    type: () => Date,
+    default: null,
+  })
+  deletedAt: Date | null;
 }
 
 export type CamisaDocument = HydratedDocument<Camisa>;
