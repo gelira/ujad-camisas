@@ -10,7 +10,7 @@ interface UserInfo {
 }
 
 export function useAuth() {
-  const auth = reactive({ nome: '', email: '', admin: false })
+  const authState = reactive({ nome: '', email: '', admin: false })
   
   const getToken = () => {
     return localStorage.getItem(ACCESS_TOKEN_LOCAL_STORAGE)
@@ -35,9 +35,9 @@ export function useAuth() {
     try {
       const { data } = await apiClient().get<UserInfo>('/auth/user-info')
 
-      auth.nome = data.nome
-      auth.email = data.email
-      auth.admin = data.admin
+      authState.nome = data.nome
+      authState.email = data.email
+      authState.admin = data.admin
     } catch (e) {
       removeToken()
       throw e
@@ -45,7 +45,7 @@ export function useAuth() {
   }
 
   return {
-    auth,
+    authState,
     getToken,
     validateGoogleToken,
     validateAccessToken
