@@ -2,16 +2,21 @@
 import { onMounted } from 'vue'
 import { useRouter, RouterView } from 'vue-router'
 
-import { useAuth } from '@/composables/auth'
+import { removeToken } from '@/api/client'
+import { validateAccessToken } from '@/api/auth'
 
 const router = useRouter()
 
-const { validateAccessToken } = useAuth()
-
 onMounted(() => {
   validateAccessToken()
-    .then(() => router.push({ name: 'setores' }))
-    .catch(() => router.push({ name: 'login' }))
+    .then(({ data }) => {
+      console.log(data)
+      router.push({ name: 'setores' })
+    })
+    .catch(() => {
+      removeToken()
+      router.push({ name: 'login' })
+    })
 })
 </script>
 
