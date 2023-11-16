@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useCamisas } from '@/composables/camisa'
+import { type Camisa } from '@/api/camisa'
+
+const props = defineProps<{ camisas: Camisa[] }>()
 
 const emit = defineEmits<{
   (e: 'edit', id: string): void,
   (e: 'delete', id: string): void
 }>()
-
-const { camisas } = useCamisas()
 
 const headers = [
   {
@@ -54,7 +54,7 @@ const pageOptions = [
 
 <template>
   <v-data-table
-    :items="camisas"
+    :items="props.camisas"
     :headers="headers"
     :items-per-page-options="pageOptions"
     items-per-page-text="Itens por página"
