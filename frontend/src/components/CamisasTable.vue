@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useDisplay } from 'vuetify'
 import { type Camisa } from '@/api/camisa'
 
 const props = defineProps<{ camisas: Camisa[] }>()
@@ -7,6 +8,8 @@ const emit = defineEmits<{
   (e: 'edit', id: string): void,
   (e: 'delete', id: string): void
 }>()
+
+const { mobile } = useDisplay()
 
 const headers = [
   {
@@ -59,6 +62,7 @@ const pageOptions = [
     :items-per-page-options="pageOptions"
     items-per-page-text="Itens por página"
     page-text="{0}-{1} de {2}"
+    :class="{ mobile }"
   >
     <template v-slot:item.camisa="{ item }">
       <p>{{ item.modeloDescricao }}</p>
@@ -92,3 +96,10 @@ const pageOptions = [
     </template>
   </v-data-table>
 </template>
+
+<style scoped>
+.mobile :deep(.v-data-table-footer) {
+  justify-content: center;
+  padding-top: 8px;
+}
+</style>
