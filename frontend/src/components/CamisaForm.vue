@@ -3,7 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { VForm } from 'vuetify/components/VForm'
 
-import { updateCamisa, type Camisa } from '@/api/camisa'
+import { createCamisa, updateCamisa, type Camisa } from '@/api/camisa'
 import { fetchModelos, type Modelo } from '@/api/modelo'
 import { fetchTamanhos, type Tamanho } from '@/api/tamanho'
 
@@ -27,6 +27,7 @@ const state = reactive<State>({
   tamanhos: []
 })
 
+const route = useRoute()
 const form = ref<VForm>()
 
 const title = computed(
@@ -45,15 +46,17 @@ const submit = async () => {
       return
     }
   
+    const payload = {
+      nomePessoa: state.nomePessoa,
+      modeloId: state.modeloId as string,
+      tamanhoId: state.tamanhoId as string,
+      totalPago: state.totalPago
+    }
+
     if (props.camisa) {
-      await updateCamisa(props.camisa.id, {
-        nomePessoa: state.nomePessoa,
-        modeloId: state.modeloId as string,
-        tamanhoId: state.tamanhoId as string,
-        totalPago: state.totalPago
-      })
+      await updateCamisa(props.camisa.id, payload)
     } else {
-      
+      await createCamisa({ ...payload, setorId: route.params.id as string })
     }
 
     emit('saved')

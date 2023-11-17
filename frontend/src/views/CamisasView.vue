@@ -31,8 +31,8 @@ const fetchCamisasAndSetState = () => {
     .catch(() => state.camisas = [])
 }
 
-const findCamisaById = (id: string) => {
-  return state.camisas.find(i => i.id === id) ?? null
+const findCamisaById = (camisaId: string) => {
+  return state.camisas.find(i => i.id === camisaId) ?? null
 }
 
 const handleDeleted = (camisaId: string) => {
@@ -63,6 +63,7 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
 </script>
 
 <template>
+  <v-btn @click="state.openForm = true">Criar pedido</v-btn>
   <CamisasTable
     :camisas="state.camisas"
     @edit="selectToEdit"
