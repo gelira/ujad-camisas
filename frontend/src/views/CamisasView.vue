@@ -102,7 +102,7 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
 }
 
 .actions-container :deep(.v-input__details) {
