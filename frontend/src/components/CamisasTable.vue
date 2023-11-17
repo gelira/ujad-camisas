@@ -15,18 +15,15 @@ const headers = [
   {
     title: 'Nome',
     value: 'nomePessoa',
-    align: 'start',
     sortable: false
   },
   {
     title: 'Camisa',
     key: 'camisa',
-    align: 'start',
     sortable: false,
   },
   {
     key: 'actions',
-    align: 'end',
     sortable: false,
   }
 ]
