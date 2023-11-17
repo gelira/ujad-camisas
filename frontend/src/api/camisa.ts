@@ -11,6 +11,14 @@ export interface Camisa {
   tamanhoDescricao: string
 }
 
+export interface CreateCamisa {
+  setorId: string
+	nomePessoa: string
+	modeloId: string
+	tamanhoId: string
+	totalPago: number
+}
+
 export interface UpdateCamisa {
   nomePessoa: string
   modeloId: string
@@ -22,6 +30,10 @@ export function fetchCamisas(setorId: any) {
   return apiClient().get<{ camisas: Camisa[] }>('/camisa/list', {
     params: { setorId }
   })
+}
+
+export function createCamisa(data: CreateCamisa) {
+  return apiClient().post('/camisa', data)
 }
 
 export function updateCamisa(id: string, data: UpdateCamisa) {
