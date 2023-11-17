@@ -34,6 +34,14 @@ const title = computed(
   () => props.camisa ? 'Atualizar pedido de camisa' : 'Criar pedido de camisa'
 )
 
+const resetForm = () => {
+  state.nomePessoa = ''
+  state.modeloId = null
+  state.tamanhoId = null
+  state.totalPago = 0
+  emit('close')
+}
+
 const submit = async () => {
   if (!form.value) {
     return
@@ -123,7 +131,7 @@ onMounted(() => {
         <v-btn
           variant="elevated"
           color="primary"
-          @click="emit('close')"
+          @click="resetForm"
         >Cancelar</v-btn>
         <v-btn
           variant="elevated"

@@ -2,7 +2,7 @@
 import { useDisplay } from 'vuetify'
 import { type Camisa } from '@/api/camisa'
 
-const props = defineProps<{ camisas: Camisa[] }>()
+defineProps<{ camisas: Camisa[], search: string }>()
 
 const emit = defineEmits<{
   (e: 'edit', id: string): void,
@@ -57,8 +57,9 @@ const pageOptions = [
 
 <template>
   <v-data-table
-    :items="props.camisas"
+    :items="camisas"
     :headers="headers"
+    :search="search"
     :items-per-page-options="pageOptions"
     no-data-text="Nenhum pedido registrado"
     items-per-page-text="Itens por página"

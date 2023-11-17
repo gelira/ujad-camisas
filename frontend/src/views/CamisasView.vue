@@ -12,6 +12,7 @@ interface State {
   camisaToEdit: Camisa | null
   camisaToDelete: Camisa | null
   openForm: boolean
+  search: string
 }
 
 const route = useRoute()
@@ -20,7 +21,8 @@ const state = reactive<State>({
   camisas: [],
   camisaToEdit: null,
   camisaToDelete: null,
-  openForm: false
+  openForm: false,
+  search: ''
 })
 
 const fetchCamisasAndSetState = () => {
@@ -63,9 +65,22 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
 </script>
 
 <template>
-  <v-btn @click="state.openForm = true">Criar pedido</v-btn>
+  <div class="actions-container">
+    <v-text-field
+      v-model="state.search"
+      label="Pesquisar por nome"
+      variant="outlined"
+      clearable
+    ></v-text-field>
+    <v-btn
+      icon="mdi-plus"
+      color="success"
+      @click="state.openForm = true"
+    ></v-btn>
+  </div>
   <CamisasTable
     :camisas="state.camisas"
+    :search="state.search"
     @edit="selectToEdit"
     @delete="selectToDelete"
   />
@@ -81,3 +96,16 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
     @deleted="handleDeleted($event)"
   />
 </template>
+
+<style scoped>
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions-container :deep(.v-input__details) {
+  display: none;
+}
+</style>
