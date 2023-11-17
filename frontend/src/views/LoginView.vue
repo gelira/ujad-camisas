@@ -29,8 +29,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <GoogleLogin
-    :client-id="CLIENT_ID"
-    :callback="callback"
-  />
+   <v-sheet
+    class="d-flex align-center justify-center flex-wrap text-center mx-auto login-container"
+    max-width="800"
+    width="100%"
+    elevation="4"
+    rounded
+    border
+  >
+    <div>
+      <h2 class="login-title">UJAD Camisas</h2>
+      <h4>Bem-vindo(a)!</h4>
+      <p>Acesse sua conta através do email Google cadastrado.</p>
+      <v-divider></v-divider>
+      <GoogleLogin
+        :client-id="CLIENT_ID"
+        :callback="callback"
+      />
+    </div>
+  </v-sheet>
 </template>
+
+<style scoped>
+.login-container {
+  padding: 20px 0;
+}
+
+.login-container :deep(.v-divider) {
+  margin: 10px 0 0;
+  padding: 16px 0 0;
+}
+
+.login-title {
+  margin: 0 0 32px;
+}
+</style>
