@@ -62,7 +62,7 @@ const pageOptions = [
   >
     <template v-slot:item.camisa="{ item }">
       <p>{{ item.modeloDescricao }}</p>
-      <p>({{ item.tamanhoDescricao }})</p>
+      <p>{{ item.tamanhoDescricao }}</p>
     </template>
     <template v-slot:item.actions="{ item }">
       <v-menu location="bottom">

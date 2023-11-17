@@ -29,8 +29,8 @@ watch(
 <template>
   <v-dialog v-model="state.open">
     <v-card>
+      <v-card-title>Deseja realmente excluir a camisa?</v-card-title>
       <v-card-text>
-        <h3>Deseja realmente excluir a camisa?</h3>
         <p>Nome: {{ camisa?.nomePessoa ?? '' }}</p>
         <p>Modelo: {{ camisa?.modeloDescricao ?? '' }}</p>
         <p>Tamanho: {{ camisa?.tamanhoDescricao ?? '' }}</p>
