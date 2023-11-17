@@ -1,0 +1,29 @@
+services:
+  db-server:
+    container_name: db-server
+    hostname: db-server
+    image: mongo
+    restart: always
+    volumes:
+      - db-server-volume:/data/db
+
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    restart: always
+    ports:
+      - 8080:80
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    restart: always
+    depends_on:
+      - db-server
+
+volumes:
+  db-server-volume:
