@@ -95,6 +95,7 @@ onMounted(() => {
           <v-text-field
             v-model="state.nomePessoa"
             label="Nome da pessoa"
+            variant="outlined"
           ></v-text-field>
 
           <v-select
@@ -103,6 +104,7 @@ onMounted(() => {
             item-value="id"
             item-title="descricao"
             label="Modelo"
+            variant="outlined"
             :rules="[v => !!v || 'Campo obrigatório']"
           ></v-select>
 
@@ -112,6 +114,7 @@ onMounted(() => {
             item-value="id"
             item-title="descricao"
             label="Tamanho"
+            variant="outlined"
             :rules="[v => !!v || 'Campo obrigatório']"
           ></v-select>
         </v-form>

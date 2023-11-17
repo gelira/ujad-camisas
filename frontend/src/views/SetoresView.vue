@@ -27,6 +27,7 @@ onMounted(() => {
     :items="state.setores"
     item-title="nome"
     item-value="id"
+    variant="outlined"
     @update:model-value="updateHandler"
   ></v-select>
   <RouterView />

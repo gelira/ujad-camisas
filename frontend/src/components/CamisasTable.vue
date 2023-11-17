@@ -60,6 +60,7 @@ const pageOptions = [
     :items="props.camisas"
     :headers="headers"
     :items-per-page-options="pageOptions"
+    no-data-text="Nenhum pedido registrado"
     items-per-page-text="Itens por página"
     page-text="{0}-{1} de {2}"
     :class="{ mobile }"
