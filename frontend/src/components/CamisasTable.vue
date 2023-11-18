@@ -61,7 +61,7 @@ const pageOptions = [
     no-data-text="Nenhum pedido registrado"
     items-per-page-text="Itens por página"
     page-text="{0}-{1} de {2}"
-    :class="{ mobile }"
+    :class="['camisas-table', { 'camisas-table-mobile': mobile }]"
   >
     <template v-slot:item.camisa="{ item }">
       <p>{{ item.modeloDescricao }}</p>
@@ -97,7 +97,11 @@ const pageOptions = [
 </template>
 
 <style scoped>
-.mobile :deep(.v-data-table-footer) {
+.camisas-table :deep(.v-data-table__tr .v-data-table__td):last-child {
+  text-align: end;
+}
+
+.camisas-table-mobile :deep(.v-data-table-footer) {
   justify-content: center;
   padding-top: 8px;
 }
