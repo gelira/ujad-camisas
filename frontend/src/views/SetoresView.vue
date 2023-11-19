@@ -46,14 +46,9 @@ watch(() => state.setorSelected, navigate, { immediate: true })
     item-title="nome"
     item-value="id"
     variant="outlined"
-    :disabled="state.setores.length < 2"
-    class="setor-select"
+    density="compact"
+    hide-details
+    :readonly="state.setores.length < 2"
   ></v-select>
   <RouterView />
 </template>
-
-<style scoped>
-.setor-select :deep(.v-field--disabled) {
-  opacity: 0.5;
-}
-</style>

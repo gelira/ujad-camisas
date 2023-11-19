@@ -70,11 +70,14 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
       v-model="state.search"
       label="Pesquisar por nome"
       variant="outlined"
+      density="compact"
+      hide-details
       clearable
     ></v-text-field>
     <v-btn
       icon="mdi-plus"
       color="success"
+      density="comfortable"
       @click="state.openForm = true"
     ></v-btn>
   </div>
@@ -103,9 +106,6 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-}
-
-.actions-container :deep(.v-input__details) {
-  display: none;
+  margin: 12px 0 0;
 }
 </style>
