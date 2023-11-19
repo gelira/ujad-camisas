@@ -61,6 +61,7 @@ const pageOptions = [
     no-data-text="Nenhum pedido registrado"
     items-per-page-text="Itens por página"
     page-text="{0}-{1} de {2}"
+    fixed-header
     :class="['camisas-table', { 'camisas-table-mobile': mobile }]"
   >
     <template v-slot:item.camisa="{ item }">
@@ -99,6 +100,10 @@ const pageOptions = [
 <style scoped>
 .camisas-table :deep(.v-data-table__tr .v-data-table__td):last-child {
   text-align: end;
+}
+
+.camisas-table-mobile {
+  height: calc(100% - 92px);
 }
 
 .camisas-table-mobile :deep(.v-data-table-footer) {
