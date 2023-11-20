@@ -1,5 +1,5 @@
 import { apiClient } from './client'
 
-export function fetchModelos() {
+export function apiFetchModelos() {
   return apiClient().get<{ modelos: Modelo[] }>('/modelo/list')
 }

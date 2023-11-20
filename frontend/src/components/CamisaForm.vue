@@ -3,17 +3,15 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { VForm } from 'vuetify/components/VForm'
 
+import { useModeloStore } from '@/stores/modelo'
+import { useTamanhoStore } from '@/stores/tamanho'
 import { createCamisa, updateCamisa } from '@/api/camisa'
-import { fetchModelos } from '@/api/modelo'
-import { fetchTamanhos } from '@/api/tamanho'
 
 interface State {
   nomePessoa: string
   modeloId: string | null
   tamanhoId: string | null
   totalPago: number
-  modelos: Modelo[]
-  tamanhos: Tamanho[]
 }
 
 const props = defineProps<{ camisa: Camisa | null, open: boolean }>()
@@ -23,9 +21,10 @@ const state = reactive<State>({
   modeloId: null,
   tamanhoId: null,
   totalPago: 0,
-  modelos: [],
-  tamanhos: []
 })
+
+const modeloStore = useModeloStore()
+const tamanhoStore = useTamanhoStore()
 
 const route = useRoute()
 const form = ref<VForm>()
@@ -84,13 +83,11 @@ watch(
 )
 
 onMounted(() => {
-  fetchModelos()
-    .then(({ data }) => state.modelos = data.modelos)
-    .catch(() => state.modelos = [])
+  modeloStore.fetchModelos()
+    .catch(() => {})
 
-  fetchTamanhos()
-    .then(({ data }) => state.tamanhos = data.tamanhos)
-    .catch(() => state.tamanhos = [])
+  tamanhoStore.fetchTamanhos()
+    .catch(() => {})
 })
 </script>
 
@@ -108,7 +105,7 @@ onMounted(() => {
 
           <v-select
             v-model="state.modeloId"
-            :items="state.modelos"
+            :items="modeloStore.modelos"
             item-value="id"
             item-title="descricao"
             label="Modelo"
@@ -118,7 +115,7 @@ onMounted(() => {
 
           <v-select
             v-model="state.tamanhoId"
-            :items="state.tamanhos"
+            :items="tamanhoStore.tamanhos"
             item-value="id"
             item-title="descricao"
             label="Tamanho"
