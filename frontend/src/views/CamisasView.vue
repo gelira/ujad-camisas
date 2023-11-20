@@ -2,7 +2,7 @@
 import { reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { fetchCamisas, type Camisa } from '@/api/camisa'
+import { fetchCamisas } from '@/api/camisa'
 import CamisasTable from '@/components/CamisasTable.vue'
 import DeleteCamisa from '@/components/DeleteCamisa.vue'
 import CamisaForm from '@/components/CamisaForm.vue'

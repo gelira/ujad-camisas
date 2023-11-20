@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
 
-import { deleteCamisa, type Camisa } from '@/api/camisa'
+import { deleteCamisa } from '@/api/camisa'
 
 const props = defineProps<{ camisa: Camisa | null }>()
 const emit = defineEmits<{

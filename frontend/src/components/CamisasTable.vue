@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
-import { type Camisa } from '@/api/camisa'
 
 defineProps<{ camisas: Camisa[], search: string }>()
 

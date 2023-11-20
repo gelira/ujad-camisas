@@ -3,9 +3,9 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { VForm } from 'vuetify/components/VForm'
 
-import { createCamisa, updateCamisa, type Camisa } from '@/api/camisa'
-import { fetchModelos, type Modelo } from '@/api/modelo'
-import { fetchTamanhos, type Tamanho } from '@/api/tamanho'
+import { createCamisa, updateCamisa } from '@/api/camisa'
+import { fetchModelos } from '@/api/modelo'
+import { fetchTamanhos } from '@/api/tamanho'
 
 interface State {
   nomePessoa: string

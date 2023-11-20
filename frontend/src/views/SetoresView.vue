@@ -2,7 +2,7 @@
 import { onMounted, reactive, watch } from 'vue'
 import { useRouter, RouterView } from 'vue-router'
 
-import { fetchSetores, type Setor } from '@/api/setor'
+import { fetchSetores } from '@/api/setor'
 
 interface State {
   setores: Setor[]
