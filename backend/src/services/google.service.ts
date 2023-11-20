@@ -6,13 +6,13 @@ import { OAuth2Client } from 'google-auth-library';
 export class GoogleService {
   constructor(private configService: ConfigService) {}
 
-  async validateToken(token: string) {
+  async validateCredential(credential: string) {
     try {
       const CLIENT_ID = this.configService.get<string>('GOOGLE_CLIENT_ID');
       const client = new OAuth2Client();
 
       const ticket = await client.verifyIdToken({
-        idToken: token,
+        idToken: credential,
         audience: CLIENT_ID,
       });
 
@@ -20,7 +20,7 @@ export class GoogleService {
 
       return { email, name };
     } catch {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid credential');
     }
   }
 }

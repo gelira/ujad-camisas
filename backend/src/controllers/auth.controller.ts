@@ -35,8 +35,8 @@ export class AuthController {
   @Post('google')
   @HttpCode(HttpStatus.OK)
   async authGoogle(@Body() authDTO: AuthDTO) {
-    const { email, name } = await this.googleService.validateToken(
-      authDTO.token,
+    const { email, name } = await this.googleService.validateCredential(
+      authDTO.credential,
     );
 
     const user = await this.userService.findByEmail(email);
