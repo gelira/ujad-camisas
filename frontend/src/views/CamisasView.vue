@@ -106,6 +106,6 @@ watch(() => route.params.id, fetchCamisasAndSetState, { immediate: true })
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  margin: 12px 0 0;
+  margin: 12px 0 4px;
 }
 </style>

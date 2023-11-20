@@ -50,14 +50,14 @@ onMounted(() => {
   </v-sheet>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .login-container {
   padding: 20px 0;
-}
-
-.login-container :deep(.v-divider) {
-  margin: 10px 0 0;
-  padding: 16px 0 0;
+  
+  :deep(.v-divider) {
+    margin: 10px 0 0;
+    padding: 16px 0 0;
+  }
 }
 
 .login-title {
