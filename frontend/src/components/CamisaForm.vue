@@ -3,9 +3,9 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { VForm } from 'vuetify/components/VForm'
 
+import { useCamisaStore } from '@/stores/camisa'
 import { useModeloStore } from '@/stores/modelo'
 import { useTamanhoStore } from '@/stores/tamanho'
-import { createCamisa, updateCamisa } from '@/api/camisa'
 
 interface State {
   nomePessoa: string
@@ -14,8 +14,8 @@ interface State {
   totalPago: number
 }
 
-const props = defineProps<{ camisa: Camisa | null, open: boolean }>()
-const emit = defineEmits<{ (e: 'close'): void, (e: 'saved'): void }>()
+const props = defineProps<{ camisaId: string, open: boolean }>()
+const emit = defineEmits<{ (e: 'close'): void }>()
 const state = reactive<State>({
   nomePessoa: '',
   modeloId: null,
@@ -23,6 +23,7 @@ const state = reactive<State>({
   totalPago: 0,
 })
 
+const camisaStore = useCamisaStore()
 const modeloStore = useModeloStore()
 const tamanhoStore = useTamanhoStore()
 
@@ -30,7 +31,7 @@ const route = useRoute()
 const form = ref<VForm>()
 
 const title = computed(
-  () => props.camisa ? 'Atualizar pedido de camisa' : 'Criar pedido de camisa'
+  () => props.camisaId ? 'Atualizar pedido de camisa' : 'Criar pedido de camisa'
 )
 
 const resetForm = () => {
@@ -46,38 +47,39 @@ const submit = async () => {
     return
   }
 
-  try {
-    const { valid } = await form.value.validate()
-  
-    if (!valid) {
-      return
-    }
-  
-    const payload = {
-      nomePessoa: state.nomePessoa,
-      modeloId: state.modeloId as string,
-      tamanhoId: state.tamanhoId as string,
-      totalPago: state.totalPago
-    }
+  const { valid } = await form.value.validate()
 
-    if (props.camisa) {
-      await updateCamisa(props.camisa.id, payload)
-    } else {
-      await createCamisa({ ...payload, setorId: route.params.id as string })
-    }
-
-    emit('saved')
-  } catch {
-    // do nothing
+  if (!valid) {
+    return
   }
+
+  const payload = {
+    nomePessoa: state.nomePessoa,
+    modeloId: state.modeloId as string,
+    tamanhoId: state.tamanhoId as string,
+    totalPago: state.totalPago
+  }
+
+  const setorId = route.params.id as string
+
+  if (props.camisaId) {
+    await camisaStore.updateCamisa(props.camisaId, payload)
+  } else {
+    await camisaStore.createCamisa({ ...payload, setorId })
+  }
+
+  await camisaStore.fetchCamisas(setorId)
+  emit('close')
 }
 
 watch(
-  () => props.camisa,
+  () => props.camisaId,
   (value) => {
-    state.nomePessoa = value?.nomePessoa ?? ''
-    state.modeloId = value?.modeloId ?? null
-    state.tamanhoId = value?.tamanhoId ?? null
+    const camisa = camisaStore.findById(value)
+
+    state.nomePessoa = camisa?.nomePessoa ?? ''
+    state.modeloId = camisa?.modeloId ?? null
+    state.tamanhoId = camisa?.tamanhoId ?? null
   },
   { immediate: true }
 )

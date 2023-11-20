@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
+import { useCamisaStore } from '@/stores/camisa'
 
-defineProps<{ camisas: Camisa[], search: string }>()
+defineProps<{ search: string }>()
 
 const emit = defineEmits<{
   (e: 'edit', id: string): void,
@@ -9,6 +10,8 @@ const emit = defineEmits<{
 }>()
 
 const { mobile } = useDisplay()
+
+const camisaStore = useCamisaStore()
 
 const headers = [
   {
@@ -53,7 +56,7 @@ const pageOptions = [
 
 <template>
   <v-data-table
-    :items="camisas"
+    :items="camisaStore.camisas"
     :headers="headers"
     :search="search"
     :items-per-page-options="pageOptions"

@@ -1,28 +1,37 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
 
-import { deleteCamisa } from '@/api/camisa'
+import { useCamisaStore } from '@/stores/camisa'
 
-const props = defineProps<{ camisa: Camisa | null }>()
-const emit = defineEmits<{
-  (e: 'close'): void, 
-  (e: 'deleted', value: string): void 
-}>()
-const state = reactive({ open: false })
+interface State {
+  camisa: Camisa | null
+  open: boolean
+}
+
+const props = defineProps<{ camisaId: string }>()
+const emit = defineEmits<{ (e: 'close'): void }>()
+
+const state = reactive<State>({
+  camisa: null, 
+  open: false
+})
+
+const camisaStore = useCamisaStore()
 
 const handleDelete = () => {
-  if (props.camisa) {
-    const camisaId = props.camisa.id
-
-    deleteCamisa(camisaId)
-      .then(() => emit('deleted', camisaId))
+  if (props.camisaId) {
+    camisaStore.deleteCamisa(props.camisaId)
+      .then(() => emit('close'))
       .catch(() => {})
   }
 }
 
 watch(
-  () => props.camisa,
-  (value) => state.open = !!value
+  () => props.camisaId,
+  (value) => {
+    state.camisa = camisaStore.findById(value)
+    state.open = !!value
+  }
 )
 </script>
 
@@ -31,9 +40,9 @@ watch(
     <v-card>
       <v-card-title>Deseja realmente excluir a camisa?</v-card-title>
       <v-card-text>
-        <p>Nome: {{ camisa?.nomePessoa ?? '' }}</p>
-        <p>Modelo: {{ camisa?.modeloDescricao ?? '' }}</p>
-        <p>Tamanho: {{ camisa?.tamanhoDescricao ?? '' }}</p>
+        <p>Nome: {{ state.camisa?.nomePessoa ?? '' }}</p>
+        <p>Modelo: {{ state.camisa?.modeloDescricao ?? '' }}</p>
+        <p>Tamanho: {{ state.camisa?.tamanhoDescricao ?? '' }}</p>
       </v-card-text>
       <v-card-actions>
         <v-btn

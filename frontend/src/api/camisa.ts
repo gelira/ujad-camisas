@@ -1,19 +1,19 @@
 import { apiClient } from './client'
 
-export function fetchCamisas(setorId: any) {
+export function apiFetchCamisas(setorId: string) {
   return apiClient().get<{ camisas: Camisa[] }>('/camisa/list', {
     params: { setorId }
   })
 }
 
-export function createCamisa(data: CreateCamisa) {
+export function apiCreateCamisa(data: CreateCamisa) {
   return apiClient().post('/camisa', data)
 }
 
-export function updateCamisa(id: string, data: UpdateCamisa) {
+export function apiUpdateCamisa(id: string, data: UpdateCamisa) {
   return apiClient().put(`/camisa/${id}`, data)
 }
 
-export function deleteCamisa(id: string) {
+export function apiDeleteCamisa(id: string) {
   return apiClient().delete(`/camisa/${id}`)
 }
