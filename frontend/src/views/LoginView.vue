@@ -3,21 +3,20 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { GoogleLogin, type CallbackTypes } from 'vue3-google-login'
 
-import { getToken, setToken } from '@/api/client'
-import { validateGoogleCredential } from '@/api/auth'
+import { useAuthStore } from '@/stores/auth'
+import { getToken } from '@/utils/token'
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 const router = useRouter()
 
+const authStore = useAuthStore()
+
 const navigateHome = () => router.push({ name: 'home' })
 
 const callback: CallbackTypes.CredentialCallback = ({ credential }) => {
-  validateGoogleCredential(credential)
-    .then(({ data }) => {
-      setToken(data.token)
-      navigateHome()
-    })
+  authStore.validateGoogleCredential(credential)
+    .then(() => navigateHome())
     .catch(() => {})
 }
 

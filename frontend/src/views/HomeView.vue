@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRouter, RouterView } from 'vue-router'
-
-import { removeToken } from '@/api/client'
-import { validateAccessToken } from '@/api/auth'
+import { useRouter, useRoute, RouterView } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const route = useRoute()
+
+const authStore = useAuthStore()
 
 onMounted(() => {
-  validateAccessToken()
-    .then(({ data }) => {
-      console.log(data)
-      router.push({ name: 'setores' })
+  authStore.validateAccessToken()
+    .then(() => {
+      if (route.name !== 'setores' && route.name !== 'camisas') {
+        router.push({ name: 'setores' })
+      }
     })
-    .catch(() => {
-      removeToken()
-      router.push({ name: 'login' })
-    })
+    .catch(() => router.push({ name: 'login' }))
 })
 </script>
 

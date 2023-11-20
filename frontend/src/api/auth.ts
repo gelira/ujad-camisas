@@ -1,9 +1,9 @@
 import { apiClient } from './client'
 
-export function validateGoogleCredential(credential: string) {
+export function apiValidateGoogleCredential(credential: string) {
   return apiClient(false).post<{ token: string }>('/auth/google', { credential })
 }
 
-export function validateAccessToken() {
+export function apiValidateAccessToken() {
   return apiClient().get<UserInfo>('/auth/user-info')
 }
