@@ -1,5 +1,5 @@
 import { apiClient } from './client'
 
-export function fetchSetores() {
+export function apiFetchSetores() {
   return apiClient().get<{ setores: Setor[] }>('/setor/list')
 }

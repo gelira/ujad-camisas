@@ -1,54 +1,61 @@
 <script setup lang="ts">
-import { onMounted, reactive, watch } from 'vue'
-import { useRouter, RouterView } from 'vue-router'
+import { computed, onMounted, reactive, watch } from 'vue'
+import { useRouter, useRoute, RouterView } from 'vue-router'
 
-import { fetchSetores } from '@/api/setor'
+import { useSetorStore } from '@/stores/setor'
 
 interface State {
-  setores: Setor[]
   setorSelected: string | null
 }
 
-const state = reactive<State>({
-  setores: [],
-  setorSelected: null
-})
-
 const router = useRouter()
+const route = useRoute()
 
-const navigate = () => {
-  const id = state.setorSelected
+const setorStore = useSetorStore()
 
-  if (id) {
-    router.push({ name: 'camisas', params: { id } })
-  }
-}
+const state = reactive<State>({ setorSelected: null })
+
+const readonly = computed(() => setorStore.setores.length < 2)
 
 onMounted(() => {
-  fetchSetores()
-    .then(({ data: { setores } }) => {
-      state.setores = setores
-      if (setores.length === 1) {
-        state.setorSelected = setores[0].id
+  setorStore.fetchSetores()
+    .then(() => {
+      const setorId = route.params.id as string
+
+      if (setorId) {
+        state.setorSelected = setorId
+        return
+      }
+
+      if (setorStore.setores.length === 1) {
+        state.setorSelected = setorStore.setores[0].id
       }
     })
     .catch(() => {})
 })
 
-watch(() => state.setorSelected, navigate, { immediate: true })
+watch(
+  () => state.setorSelected,
+  (id, oldId) => {
+    if (id && id !== oldId) {
+      router.push({ name: 'camisas', params: { id } })
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
   <v-select
     label="Selecionar o setor"
-    :items="state.setores"
+    :items="setorStore.setores"
     v-model="state.setorSelected"
     item-title="nome"
     item-value="id"
     variant="outlined"
     density="compact"
     hide-details
-    :readonly="state.setores.length < 2"
+    :readonly="readonly"
   ></v-select>
   <RouterView />
 </template>
