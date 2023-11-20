@@ -62,7 +62,7 @@ watch(
   <CamisaForm
     :camisa-id="state.camisaIdToEdit"
     :open="state.openForm"
-    @close="state.camisaIdToEdit = ''"
+    @close="state.camisaIdToEdit = ''; state.openForm = false"
   />
   <DeleteCamisa
     :camisa-id="state.camisaIdToDelete"
