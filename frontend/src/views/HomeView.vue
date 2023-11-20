@@ -20,5 +20,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <RouterView />
+  <v-container class="h-screen">
+    <RouterView />
+  </v-container>
 </template>
