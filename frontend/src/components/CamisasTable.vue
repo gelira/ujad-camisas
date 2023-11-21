@@ -64,7 +64,7 @@ const pageOptions = [
     items-per-page-text="Itens por página"
     page-text="{0}-{1} de {2}"
     fixed-header
-    :class="['camisas-table', { mobile }]"
+    :class="{ mobile }"
   >
     <template v-slot:item.camisa="{ item }">
       <p>{{ item.modeloDescricao }}</p>
@@ -100,16 +100,24 @@ const pageOptions = [
 </template>
 
 <style scoped lang="scss">
-.camisas-table {
+.v-table {
   height: calc(100% - 96px);
 
   :deep(.v-data-table__tr .v-data-table__td):last-child {
     text-align: end;
   }
 
-  &.mobile :deep(.v-data-table-footer) {
-    justify-content: center;
-    padding-top: 8px;
+  &.mobile {
+    :deep(.v-data-table-footer) {
+      justify-content: center;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    :deep(.v-data-table-footer__items-per-page) {
+      width: 100%;
+      padding: 0;
+    }
   }
 }
 </style>
