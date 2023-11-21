@@ -107,11 +107,14 @@ const pageOptions = [
     text-align: end;
   }
 
+  :deep(.v-data-table-footer) {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
   &.mobile {
     :deep(.v-data-table-footer) {
       justify-content: center;
       padding-top: 8px;
-      border-top: 1px solid rgba(0, 0, 0, 0.12);
     }
 
     :deep(.v-data-table-footer__items-per-page) {
