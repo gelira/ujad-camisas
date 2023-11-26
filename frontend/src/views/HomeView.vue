@@ -3,21 +3,37 @@ import { onMounted } from 'vue'
 import { useRouter, useRoute, RouterView } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
+import { useSetorStore } from '@/stores/setor'
 import AppBar from '@/components/AppBar.vue'
 
 const router = useRouter()
 const route = useRoute()
 
 const authStore = useAuthStore()
+const setorStore = useSetorStore()
 
 onMounted(() => {
-  authStore.validateAccessToken()
-    .then(() => {
-      if (route.name !== 'setores' && route.name !== 'camisas') {
-        router.push({ name: 'setores' })
+  (async () => {
+    try {
+      await authStore.validateAccessToken()
+      await setorStore.fetchSetores()
+
+      console.log(authStore.admin)
+
+      if (authStore.admin || route.name === 'camisas' || setorStore.setores.length === 0) {
+        return
       }
-    })
-    .catch(() => router.push({ name: 'login' }))
+
+      router.push({
+        name: 'camisas',
+        params: {
+          id: setorStore.setores[0].id
+        }
+      })
+    } catch {
+      router.push({ name: 'login' })
+    }
+  })()
 })
 </script>
 

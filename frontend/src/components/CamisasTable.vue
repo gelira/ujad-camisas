@@ -101,7 +101,7 @@ const pageOptions = [
 
 <style scoped lang="scss">
 .v-table {
-  height: calc(100% - 96px);
+  height: calc(100% - 40px);
 
   :deep(.v-data-table__tr .v-data-table__td):last-child {
     text-align: end;

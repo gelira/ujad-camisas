@@ -51,6 +51,7 @@ const navigate = (id: string) => router.push({ name: 'camisas', params: { id } }
           @click="navigate(id)"
         />
       </v-list-group>
+      <v-divider />
     </v-list>
   </v-navigation-drawer>
 </template>

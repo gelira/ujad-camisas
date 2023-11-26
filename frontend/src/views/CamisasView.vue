@@ -76,6 +76,5 @@ watch(
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  margin: 12px 0 4px;
 }
 </style>
