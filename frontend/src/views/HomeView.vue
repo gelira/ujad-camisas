@@ -18,8 +18,6 @@ onMounted(() => {
       await authStore.validateAccessToken()
       await setorStore.fetchSetores()
 
-      console.log(authStore.admin)
-
       if (authStore.admin || route.name === 'camisas' || setorStore.setores.length === 0) {
         return
       }
