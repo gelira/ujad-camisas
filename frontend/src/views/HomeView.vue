@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter, useRoute, RouterView } from 'vue-router'
+
 import { useAuthStore } from '@/stores/auth'
+import AppBar from '@/components/AppBar.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -20,12 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app-bar elevation="2" color="primary">
-    <template v-slot:prepend>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-    </template>
-    <v-app-bar-title>UJAD Camisas</v-app-bar-title>
-  </v-app-bar>
+  <AppBar />
   <v-container>
     <RouterView />
   </v-container>
