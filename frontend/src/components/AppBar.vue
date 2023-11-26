@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
 import { useSetorStore } from '@/stores/setor'
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const setorStore = useSetorStore()
@@ -18,11 +19,18 @@ const title = computed(() => {
   return `Setor - ${setorStore.setorSelected.nome}`
 })
 
+const setorId = computed(() => route.params.id as string)
+
 const toggle = () => {
   state.drawerOpen = !state.drawerOpen
 }
 
-const navigate = (id: string) => router.push({ name: 'camisas', params: { id } })
+const navigate = (id: string) => {
+  if (id !== setorId.value) {
+    router.push({ name: 'camisas', params: { id } })
+  }
+  state.drawerOpen = false
+}
 </script>
 
 <template>
@@ -32,7 +40,10 @@ const navigate = (id: string) => router.push({ name: 'camisas', params: { id } }
     </template>
     <v-app-bar-title>{{ title }}</v-app-bar-title>
   </v-app-bar>
-  <v-navigation-drawer v-model="state.drawerOpen">
+  <v-navigation-drawer
+    v-model="state.drawerOpen"
+    temporary
+  >
     <v-list>
       <v-list-item
         append-icon="mdi-account-circle"
@@ -48,6 +59,7 @@ const navigate = (id: string) => router.push({ name: 'camisas', params: { id } }
           v-for="{ id, nome } in setorStore.setores"
           :key="id"
           :title="nome"
+          :variant="setorId === id ? 'tonal' : 'text'"
           @click="navigate(id)"
         />
       </v-list-group>
