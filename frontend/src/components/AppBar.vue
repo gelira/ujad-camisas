@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
 import { useSetorStore } from '@/stores/setor'
+import { removeToken } from '@/utils/token'
 
 interface State {
   drawerOpen: boolean
@@ -40,6 +41,11 @@ const navigate = (id: string) => {
     router.push({ name: 'camisas', params: { id } })
   }
   state.drawerOpen = false
+}
+
+const logout = () => {
+  removeToken()
+  router.push({ name: 'login' })
 }
 </script>
 
@@ -85,6 +91,7 @@ const navigate = (id: string) => {
         title="Sair"
         append-icon="mdi-logout"
         class="logout"
+        @click="logout"
       />
     </v-list>
   </v-navigation-drawer>
