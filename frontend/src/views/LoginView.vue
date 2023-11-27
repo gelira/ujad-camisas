@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { GoogleLogin, type CallbackTypes } from 'vue3-google-login'
 
 import { useAuthStore } from '@/stores/auth'
+import { useAlertStore } from '@/stores/alert'
 import { getToken } from '@/utils/token'
 
 interface State {
@@ -14,6 +15,7 @@ const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 const router = useRouter()
 const authStore = useAuthStore()
+const alertStore = useAlertStore()
 
 const state = reactive<State>({ loading: false })
 
@@ -29,7 +31,7 @@ const callback: CallbackTypes.CredentialCallback = ({ credential }) => {
       await authStore.validateGoogleCredential(credential)
       navigateHome()
     } catch {
-      // do nothing
+      alertStore.showAlert('Não foi possível fazer login. Tente novamente.')
     } finally {
       state.loading = false
     }
