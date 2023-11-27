@@ -1,23 +1,39 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { GoogleLogin, type CallbackTypes } from 'vue3-google-login'
 
 import { useAuthStore } from '@/stores/auth'
 import { getToken } from '@/utils/token'
 
+interface State {
+  loading: boolean | string
+}
+
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 const router = useRouter()
-
 const authStore = useAuthStore()
 
-const navigateHome = () => router.push({ name: 'home' })
+const state = reactive<State>({ loading: false })
+
+const navigateHome = () => {
+  router.push({ name: 'home' })
+}
 
 const callback: CallbackTypes.CredentialCallback = ({ credential }) => {
-  authStore.validateGoogleCredential(credential)
-    .then(() => navigateHome())
-    .catch(() => {})
+  (async () => {
+    state.loading = 'primary'
+
+    try {
+      await authStore.validateGoogleCredential(credential)
+      navigateHome()
+    } catch {
+      // do nothing
+    } finally {
+      state.loading = false
+    }
+  })()
 }
 
 onMounted(() => {
@@ -29,44 +45,52 @@ onMounted(() => {
 
 <template>
   <v-container class="h-screen">
-    <v-sheet
-      class="d-flex align-center justify-center flex-wrap text-center mx-auto"
+    <v-card
+      :loading="state.loading"
       elevation="4"
       rounded
       border
     >
-      <div>
-        <h2 class="login-title">UJAD Camisas</h2>
-        <h4>Bem-vindo(a)!</h4>
-        <p>Acesse sua conta através do email Google cadastrado.</p>
-        <v-divider></v-divider>
+      <v-card-title>UJAD Camisas</v-card-title>
+      <v-card-text>
+        <strong>Bem-vindo(a)!</strong>
+        <br>
+        Acesse sua conta através do email Google cadastrado.
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
         <GoogleLogin
           :client-id="CLIENT_ID"
           :callback="callback"
         />
-      </div>
-    </v-sheet>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .v-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  max-width: 800px;
 }
 
-.v-sheet {
-  padding: 20px;
-  width: fit-content;
+.v-card-title {
+  padding-top: 16px;
+  font-size: 24px;
+  text-align: center;
 }
 
-.v-divider {
-  margin: 10px 0 0;
-  padding: 16px 0 0;
+.v-card-text {
+  padding: 16px;
+  font-size: 18px;
+  line-height: 28px !important;
+  text-align: center;
 }
 
-.login-title {
-  margin: 0 0 32px;
+.v-card-actions {
+  padding: 16px;
+  justify-content: center;
 }
 </style>
