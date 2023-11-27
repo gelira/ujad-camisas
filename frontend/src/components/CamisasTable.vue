@@ -77,22 +77,21 @@ const pageOptions = [
             variant="text"
             icon="mdi-dots-vertical"
             v-bind="props"
-          ></v-btn>
+          />
         </template>
 
         <v-list>
-          <v-list-item @click="emit('edit', item.id)">
-            <template v-slot:append>
-              <v-icon icon="mdi-pencil"></v-icon>
-            </template>
-            <v-list-item-title>Editar</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="emit('delete', item.id)">
-            <template v-slot:append>
-              <v-icon icon="mdi-delete"></v-icon>
-            </template>
-            <v-list-item-title>Deletar</v-list-item-title>
-          </v-list-item>
+          <v-list-item
+            append-icon="mdi-pencil"
+            title="Editar"
+            @click="emit('edit', item.id)"
+          />
+          <v-list-item
+            append-icon="mdi-delete"
+            title="Deletar"
+            class="delete-button"
+            @click="emit('delete', item.id)"
+          />
         </v-list>
       </v-menu>
     </template>
@@ -122,5 +121,9 @@ const pageOptions = [
       padding: 0;
     }
   }
+}
+
+.delete-button {
+  color: red;
 }
 </style>
