@@ -20,6 +20,8 @@ import { TamanhoController } from './controllers/tamanho.controller';
 import { CamisaService } from './services/camisa.service';
 import { Camisa, CamisaSchema } from './schemas/camisa.schema';
 import { CamisaController } from './controllers/camisa.controller';
+import { ReportService } from './services/report.service';
+import { ReportController } from './controllers/report.controller';
 
 @Module({
   imports: [
@@ -54,6 +56,7 @@ import { CamisaController } from './controllers/camisa.controller';
     ModeloController,
     TamanhoController,
     CamisaController,
+    ReportController,
   ],
   providers: [
     GoogleService,
@@ -63,6 +66,7 @@ import { CamisaController } from './controllers/camisa.controller';
     ModeloService,
     TamanhoService,
     CamisaService,
+    ReportService,
   ],
 })
 export class AppModule {}
