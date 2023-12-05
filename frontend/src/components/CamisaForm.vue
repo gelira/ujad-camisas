@@ -107,15 +107,14 @@ onMounted(() => {
 
 <template>
   <v-dialog v-model="props.open" persistent>
-    <v-card :loading="state.loading">
-      <v-card-title>{{ title }}</v-card-title>
+    <v-card :loading="state.loading" :title="title">
       <v-card-text>
         <v-form ref="form">
           <v-text-field
             v-model="state.nomePessoa"
             label="Nome da pessoa"
             variant="outlined"
-          ></v-text-field>
+          />
 
           <v-select
             v-model="state.modeloId"
@@ -125,7 +124,7 @@ onMounted(() => {
             label="Modelo"
             variant="outlined"
             :rules="[v => !!v || 'Campo obrigatório']"
-          ></v-select>
+          />
 
           <v-select
             v-model="state.tamanhoId"
@@ -135,20 +134,22 @@ onMounted(() => {
             label="Tamanho"
             variant="outlined"
             :rules="[v => !!v || 'Campo obrigatório']"
-          ></v-select>
+          />
         </v-form>
       </v-card-text>
       <v-card-actions>
         <v-btn
           variant="elevated"
           color="primary"
+          text="Cancelar"
           @click="resetForm"
-        >Cancelar</v-btn>
+        />
         <v-btn
           variant="elevated"
           color="success"
+          text="Salvar"
           @click="submit"
-        >Salvar</v-btn>
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
