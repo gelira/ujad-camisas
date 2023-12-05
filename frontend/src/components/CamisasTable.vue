@@ -88,7 +88,7 @@ const pageOptions = [
           />
           <v-list-item
             append-icon="mdi-delete"
-            title="Deletar"
+            title="Excluir"
             class="delete-button"
             @click="emit('delete', item.id)"
           />

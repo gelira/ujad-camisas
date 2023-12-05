@@ -2,9 +2,11 @@
 import { reactive, watch } from 'vue'
 
 import { useCamisaStore } from '@/stores/camisa'
+import { useAlertStore } from '@/stores/alert'
 
 interface State {
   camisa: Camisa | null
+  loading: string | boolean
   open: boolean
 }
 
@@ -12,17 +14,28 @@ const props = defineProps<{ camisaId: string }>()
 const emit = defineEmits<{ (e: 'close'): void }>()
 
 const state = reactive<State>({
-  camisa: null, 
+  camisa: null,
+  loading: false,
   open: false
 })
 
 const camisaStore = useCamisaStore()
+const alertStore = useAlertStore()
 
-const handleDelete = () => {
-  if (props.camisaId) {
-    camisaStore.deleteCamisa(props.camisaId)
-      .then(() => emit('close'))
-      .catch(() => {})
+const handleDelete = async () => {
+  if (!props.camisaId) {
+    return
+  }
+
+  state.loading = 'primary'
+
+  try {
+    await camisaStore.deleteCamisa(props.camisaId)
+    emit('close')
+  } catch {
+    alertStore.showAlert('Não foi possível excluir o pedido. Tente novamente.')
+  } finally {
+    state.loading = false
   }
 }
 
@@ -36,9 +49,9 @@ watch(
 </script>
 
 <template>
-  <v-dialog v-model="state.open">
-    <v-card>
-      <v-card-title>Deseja realmente excluir a camisa?</v-card-title>
+  <v-dialog v-model="state.open" persistent>
+    <v-card :loading="state.loading">
+      <v-card-title>Deseja excluir o pedido?</v-card-title>
       <v-card-text>
         <p>Nome: {{ state.camisa?.nomePessoa ?? '' }}</p>
         <p>Modelo: {{ state.camisa?.modeloDescricao ?? '' }}</p>
