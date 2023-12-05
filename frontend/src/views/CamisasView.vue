@@ -56,7 +56,7 @@ watch(
   </div>
   <CamisasTable
     :search="state.search"
-    @edit="state.camisaIdToEdit = $event"
+    @edit="state.camisaIdToEdit = $event; state.openForm = true"
     @delete="state.camisaIdToDelete = $event"
   />
   <CamisaForm
