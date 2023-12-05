@@ -2,7 +2,10 @@
 import { useDisplay } from 'vuetify'
 import { useCamisaStore } from '@/stores/camisa'
 
-defineProps<{ search: string }>()
+defineProps<{
+  search: string,
+  loading: string | boolean
+}>()
 
 const emit = defineEmits<{
   (e: 'edit', id: string): void,
@@ -60,11 +63,13 @@ const pageOptions = [
     :headers="headers"
     :search="search"
     :items-per-page-options="pageOptions"
+    :loading="loading"
+    :class="{ mobile }"
+    loading-text="Carregando..."
     no-data-text="Nenhum pedido registrado"
     items-per-page-text="Itens por página"
     page-text="{0}-{1} de {2}"
     fixed-header
-    :class="{ mobile }"
   >
     <template v-slot:item.camisa="{ item }">
       <p>{{ item.modeloDescricao }}</p>
