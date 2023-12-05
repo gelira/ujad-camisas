@@ -50,8 +50,10 @@ watch(
 
 <template>
   <v-dialog v-model="state.open" persistent>
-    <v-card :loading="state.loading">
-      <v-card-title>Deseja excluir o pedido?</v-card-title>
+    <v-card
+      :loading="state.loading"
+      title="Deseja excluir o pedido?"
+    >
       <v-card-text>
         <p>Nome: {{ state.camisa?.nomePessoa ?? '' }}</p>
         <p>Modelo: {{ state.camisa?.modeloDescricao ?? '' }}</p>
@@ -61,13 +63,15 @@ watch(
         <v-btn
           variant="elevated"
           color="primary"
+          text="Cancelar"
           @click="emit('close')"
-        >Cancelar</v-btn>
+        />
         <v-btn
           variant="elevated"
           color="error"
+          text="Excluir"
           @click="handleDelete"
-        >Excluir</v-btn>
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
