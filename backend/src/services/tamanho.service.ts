@@ -10,7 +10,7 @@ export class TamanhoService {
   ) {}
 
   async findAll() {
-    return this.tamanhoModel.find({});
+    return this.tamanhoModel.find({}).sort({ order: 1 });
   }
 
   async findById(id: any) {
