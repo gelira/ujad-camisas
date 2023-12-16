@@ -6,12 +6,14 @@ import type { VForm } from 'vuetify/components/VForm'
 import { useCamisaStore } from '@/stores/camisa'
 import { useModeloStore } from '@/stores/modelo'
 import { useTamanhoStore } from '@/stores/tamanho'
+import { useAlertStore } from '@/stores/alert'
 
 interface State {
   nomePessoa: string
   modeloId: string | null
   tamanhoId: string | null
   totalPago: number
+  loading: string | boolean
 }
 
 const props = defineProps<{ camisaId: string, open: boolean }>()
@@ -21,17 +23,19 @@ const state = reactive<State>({
   modeloId: null,
   tamanhoId: null,
   totalPago: 0,
+  loading: false
 })
 
 const camisaStore = useCamisaStore()
 const modeloStore = useModeloStore()
 const tamanhoStore = useTamanhoStore()
+const alertStore = useAlertStore()
 
 const route = useRoute()
 const form = ref<VForm>()
 
 const title = computed(
-  () => props.camisaId ? 'Atualizar pedido de camisa' : 'Criar pedido de camisa'
+  () => props.camisaId ? 'Atualizar pedido' : 'Novo pedido'
 )
 
 const resetForm = () => {
@@ -53,6 +57,8 @@ const submit = async () => {
     return
   }
 
+  state.loading = 'primary'
+
   const payload = {
     nomePessoa: state.nomePessoa,
     modeloId: state.modeloId as string,
@@ -62,14 +68,21 @@ const submit = async () => {
 
   const setorId = route.params.id as string
 
-  if (props.camisaId) {
-    await camisaStore.updateCamisa(props.camisaId, payload)
-  } else {
-    await camisaStore.createCamisa({ ...payload, setorId })
-  }
+  try {
+    if (props.camisaId) {
+      await camisaStore.updateCamisa(props.camisaId, payload)
+    } else {
+      await camisaStore.createCamisa({ ...payload, setorId })
+    }
 
-  await camisaStore.fetchCamisas(setorId)
-  emit('close')
+    await camisaStore.fetchCamisas(setorId)
+    emit('close')
+    resetForm()
+  } catch {
+    alertStore.showAlert('Não foi possível salvar as informações. Tente novamente.')
+  } finally {
+    state.loading = false
+  }
 }
 
 watch(
@@ -95,15 +108,14 @@ onMounted(() => {
 
 <template>
   <v-dialog v-model="props.open" persistent>
-    <v-card>
-      <v-card-title>{{ title }}</v-card-title>
+    <v-card :loading="state.loading" :title="title">
       <v-card-text>
         <v-form ref="form">
           <v-text-field
             v-model="state.nomePessoa"
             label="Nome da pessoa"
             variant="outlined"
-          ></v-text-field>
+          />
 
           <v-select
             v-model="state.modeloId"
@@ -113,7 +125,7 @@ onMounted(() => {
             label="Modelo"
             variant="outlined"
             :rules="[v => !!v || 'Campo obrigatório']"
-          ></v-select>
+          />
 
           <v-select
             v-model="state.tamanhoId"
@@ -123,20 +135,22 @@ onMounted(() => {
             label="Tamanho"
             variant="outlined"
             :rules="[v => !!v || 'Campo obrigatório']"
-          ></v-select>
+          />
         </v-form>
       </v-card-text>
       <v-card-actions>
         <v-btn
           variant="elevated"
           color="primary"
+          text="Cancelar"
           @click="resetForm"
-        >Cancelar</v-btn>
+        />
         <v-btn
           variant="elevated"
           color="success"
+          text="Salvar"
           @click="submit"
-        >Salvar</v-btn>
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -145,5 +159,15 @@ onMounted(() => {
 <style scoped>
 .v-card-actions {
   justify-content: flex-end;
+}
+
+@media screen and (min-width: 64em) {
+  .v-card {
+    width: 70%;
+  }
+
+  .v-overlay :deep(.v-overlay__content) {
+    align-items: center;
+  }
 }
 </style>

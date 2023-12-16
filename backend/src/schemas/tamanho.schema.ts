@@ -8,6 +8,9 @@ export class Tamanho {
   @Prop()
   descricao: string;
 
+  @Prop()
+  order: number;
+
   @Prop(() => Date)
   createdAt: Date;
 

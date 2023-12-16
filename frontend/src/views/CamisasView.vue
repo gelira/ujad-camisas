@@ -12,6 +12,7 @@ interface State {
   camisaIdToDelete: string 
   openForm: boolean
   search: string
+  loading: string | boolean
 }
 
 const route = useRoute()
@@ -20,7 +21,8 @@ const state = reactive<State>({
   camisaIdToEdit: '',
   camisaIdToDelete: '',
   openForm: false,
-  search: ''
+  search: '',
+  loading: false
 })
 
 const camisaStore = useCamisaStore()
@@ -29,8 +31,11 @@ watch(
   () => route.params.id, 
   (value) => {
     if (value) {
+      state.loading = 'primary'
+
       camisaStore.fetchCamisas(value as string)
         .catch(() => {})
+        .finally(() => state.loading = false)
     }
   }, 
   { immediate: true }
@@ -46,17 +51,18 @@ watch(
       density="compact"
       hide-details
       clearable
-    ></v-text-field>
+    />
     <v-btn
       icon="mdi-plus"
       color="success"
       density="comfortable"
       @click="state.openForm = true"
-    ></v-btn>
+    />
   </div>
   <CamisasTable
     :search="state.search"
-    @edit="state.camisaIdToEdit = $event"
+    :loading="state.loading"
+    @edit="state.camisaIdToEdit = $event; state.openForm = true"
     @delete="state.camisaIdToDelete = $event"
   />
   <CamisaForm
