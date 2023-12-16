@@ -21,6 +21,31 @@ export class ReportService {
   ) {}
 
   async generateReportAllCamisas() {
+    const pedidos = await this.countCamisas();
+
+    const file = readFileSync(
+      join(process.cwd(), 'src', 'templates', 'report.handlebars'),
+      { encoding: 'utf8' },
+    );
+
+    const template = Handlebars.compile(file);
+
+    const content = template({ pedidos });
+
+    const buffer = await generatePdf(
+      { content },
+      {
+        format: 'A4',
+        margin: { top: '2cm', right: '2cm', bottom: '2cm', left: '2cm' },
+      },
+    );
+
+    const data = `data:application/pdf;base64,${buffer.toString('base64')}`;
+
+    return { content, data };
+  }
+
+  private async countCamisas() {
     const [setores, modelos, tamanhos] = await Promise.all([
       this.setorService.findAll(),
       this.modeloService.findAll(),
@@ -78,30 +103,5 @@ export class ReportService {
       quantidadeModelo: quantidadesTamanhos.reduce((acc, curr) => acc + curr.quantidade, 0),
       quantidadesTamanhos,
     };
-  }
-
-  async generateReport() {
-    const file = readFileSync(
-      join(process.cwd(), 'src', 'templates', 'report.html'),
-      { encoding: 'utf8' },
-    );
-
-    const data = new Date().toLocaleString('pt-BR', {
-      timeZone: 'America/Fortaleza',
-    });
-
-    const template = Handlebars.compile(file);
-
-    const content = template({ data });
-
-    const buffer = await generatePdf(
-      { content },
-      {
-        format: 'A4',
-        margin: { top: '2cm', right: '2cm', bottom: '2cm', left: '2cm' },
-      },
-    );
-
-    return `data:application/pdf;base64,${buffer.toString('base64')}`;
   }
 }

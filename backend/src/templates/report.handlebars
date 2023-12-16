@@ -1,0 +1,75 @@
+<html>
+<head>
+  <style>
+    h1 {
+      text-align: center;
+      margin: 0 0 16px;
+    }
+
+    h2, h3 {
+      margin: 0;
+    }
+
+    .setor-header, .table-header, .table-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .setor-header, .table-header {
+      margin: 0 0 16px;
+    }
+
+    .table {
+      padding: 16px;
+      border: 1px solid #000;
+      border-radius: 8px;
+      margin: 16px 0 0;
+    }
+
+    .table:last-child {
+      margin: 24px 0 0;
+    }
+
+    .table-line {
+      margin: 0 10px;
+      padding: 10px;
+      border-bottom: 1px solid #000;
+    }
+
+    @media print {
+      .container {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  {{#each pedidos}}
+    <div class="container">
+      <h1>UJAD Camisas - Relatório de pedidos</h1>
+
+      <div class="setor-header">
+        <h2>{{setor}}</h2>
+        <h3>Total de pedidos: {{quantidadeSetor}}</h3>
+      </div>
+
+      {{#each quantidadesModelos}}
+        <div class="table">
+          <div class="table-header">
+            <h2>{{modelo}}</h2>
+            <h3>Total de pedidos do modelo: {{quantidadeModelo}}</h3>
+          </div>
+
+          {{#each quantidadesTamanhos}}
+            <div class="table-line">
+              <h3>{{tamanho}}</h3>
+              <h3>{{quantidade}}</h3>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </div>
+  {{/each}}
+</body>
+</html>
