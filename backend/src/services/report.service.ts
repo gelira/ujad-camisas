@@ -30,7 +30,10 @@ export class ReportService {
 
     const template = Handlebars.compile(file);
 
-    const content = template({ pedidos });
+    const content = template({
+      pedidos,
+      timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
+    });
 
     const buffer = await generatePdf(
       { content },
