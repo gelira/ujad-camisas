@@ -5,6 +5,7 @@ import { useRouter, useRoute, RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useSetorStore } from '@/stores/setor'
 import AppBar from '@/components/AppBar.vue'
+import ButtonReport from '@/components/ButtonReport.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -38,6 +39,9 @@ onMounted(() => {
 <template>
   <AppBar />
   <v-container>
+    <ButtonReport
+      v-if="authStore.admin && route.name === 'home'"
+    />
     <RouterView />
   </v-container>
 </template>
