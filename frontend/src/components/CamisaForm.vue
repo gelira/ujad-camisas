@@ -160,4 +160,14 @@ onMounted(() => {
 .v-card-actions {
   justify-content: flex-end;
 }
+
+@media screen and (min-width: 64em) {
+  .v-card {
+    width: 70%;
+  }
+
+  .v-overlay :deep(.v-overlay__content) {
+    align-items: center;
+  }
+}
 </style>
