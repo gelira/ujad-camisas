@@ -77,6 +77,7 @@ const submit = async () => {
 
     await camisaStore.fetchCamisas(setorId)
     emit('close')
+    resetForm()
   } catch {
     alertStore.showAlert('Não foi possível salvar as informações. Tente novamente.')
   } finally {
