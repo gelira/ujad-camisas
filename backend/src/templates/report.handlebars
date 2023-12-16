@@ -54,21 +54,27 @@
         <h3>Total de pedidos: {{quantidadeSetor}}</h3>
       </div>
 
-      {{#each quantidadesModelos}}
-        <div class="table">
-          <div class="table-header">
-            <h2>{{modelo}}</h2>
-            <h3>Total de pedidos do modelo: {{quantidadeModelo}}</h3>
-          </div>
-
-          {{#each quantidadesTamanhos}}
-            <div class="table-line">
-              <h3>{{tamanho}}</h3>
-              <h3>{{quantidade}}</h3>
+      {{#if quantidadeSetor}}
+        {{#each quantidadesModelos}}
+          <div class="table">
+            <div class="table-header">
+              <h2>{{modelo}}</h2>
+              <h3>Total de pedidos do modelo: {{quantidadeModelo}}</h3>
             </div>
-          {{/each}}
-        </div>
-      {{/each}}
+
+            {{#if quantidadeModelo}}
+              {{#each quantidadesTamanhos}}
+                {{#if quantidade}}
+                  <div class="table-line">
+                    <h3>{{tamanho}}</h3>
+                    <h3>{{quantidade}}</h3>
+                  </div>
+                {{/if}}
+              {{/each}}
+            {{/if}}
+          </div>
+        {{/each}}
+      {{/if}}
     </div>
   {{/each}}
 </body>
