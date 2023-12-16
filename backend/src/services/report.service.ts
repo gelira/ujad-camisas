@@ -40,9 +40,7 @@ export class ReportService {
       },
     );
 
-    const data = `data:application/pdf;base64,${buffer.toString('base64')}`;
-
-    return { content, data };
+    return `data:application/pdf;base64,${buffer.toString('base64')}`;
   }
 
   private async countCamisas() {
