@@ -2,12 +2,25 @@
 <head>
   <style>
     h1 {
+      font-size: 24px;
       text-align: center;
       margin: 0 0 16px;
     }
 
     h2, h3 {
       margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    h3 {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 14px;
     }
 
     .setor-header, .table-header, .table-line {
@@ -52,14 +65,14 @@
 
       <div class="setor-header">
         <h2>{{setor}}</h2>
-        <h3>Total de pedidos: {{quantidadeSetor}}</h3>
+        <h2>Total de pedidos: {{quantidadeSetor}}</h2>
       </div>
 
       {{#if quantidadeSetor}}
         {{#each quantidadesModelos}}
           <div class="table">
             <div class="table-header">
-              <h2>{{modelo}}</h2>
+              <h3>{{modelo}}</h3>
               <h3>Total de pedidos do modelo: {{quantidadeModelo}}</h3>
             </div>
 
