@@ -57,6 +57,14 @@ const submit = async () => {
     return
   }
 
+  const now = Date.now()
+  const limit = Date.UTC(2023, 11, 18, 19, 59, 59)
+
+  if (now > limit) {
+    alertStore.showAlert('O prazo para pedidos já foi encerrado.')
+    return
+  }
+
   state.loading = 'primary'
 
   const payload = {
