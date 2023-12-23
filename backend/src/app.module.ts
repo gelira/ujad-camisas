@@ -22,6 +22,9 @@ import { Camisa, CamisaSchema } from './schemas/camisa.schema';
 import { CamisaController } from './controllers/camisa.controller';
 import { ReportService } from './services/report.service';
 import { ReportController } from './controllers/report.controller';
+import { Remessa, RemessaSchema } from './schemas/remessa.schema';
+import { RemessaService } from './services/remessa.service';
+import { RemessaController } from './controllers/remessa.controller';
 
 @Module({
   imports: [
@@ -39,6 +42,7 @@ import { ReportController } from './controllers/report.controller';
       { name: Modelo.name, schema: ModeloSchema },
       { name: Tamanho.name, schema: TamanhoSchema },
       { name: Camisa.name, schema: CamisaSchema },
+      { name: Remessa.name, schema: RemessaSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -57,6 +61,7 @@ import { ReportController } from './controllers/report.controller';
     TamanhoController,
     CamisaController,
     ReportController,
+    RemessaController,
   ],
   providers: [
     GoogleService,
@@ -67,6 +72,7 @@ import { ReportController } from './controllers/report.controller';
     TamanhoService,
     CamisaService,
     ReportService,
+    RemessaService,
   ],
 })
 export class AppModule {}
