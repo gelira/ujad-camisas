@@ -16,6 +16,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { UserDocument } from 'src/schemas/user.schema';
 import { CamisaService } from 'src/services/camisa.service';
 import { ModeloService } from 'src/services/modelo.service';
+import { RemessaService } from 'src/services/remessa.service';
 import { SetorService } from 'src/services/setor.service';
 import { TamanhoService } from 'src/services/tamanho.service';
 
@@ -26,6 +27,7 @@ export class CamisaController {
     private setorService: SetorService,
     private modeloService: ModeloService,
     private tamanhoService: TamanhoService,
+    private remessaService: RemessaService,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -38,6 +40,12 @@ export class CamisaController {
       createCamisaDTO.setorId,
       !user.admin && user.id,
     );
+
+    const remessa = await this.remessaService.findById(
+      createCamisaDTO.remessaId,
+    );
+
+    this.remessaService.checkAberta(remessa);
 
     const modelo = await this.modeloService.findById(createCamisaDTO.modeloId);
     const tamanho = await this.tamanhoService.findById(
@@ -52,10 +60,11 @@ export class CamisaController {
   async listCamisas(
     @RequestUser() user: UserDocument,
     @Query('setorId') setorId: string,
+    @Query('remessaId') remessaId: string,
   ) {
     await this.setorService.findById(setorId, !user.admin && user.id);
 
-    const camisas = (await this.camisaService.findBySetor(setorId)).map(
+    const camisas = (await this.camisaService.findBySetorRemessa(setorId, remessaId)).map(
       ({
         id,
         nomePessoa,

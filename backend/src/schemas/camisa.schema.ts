@@ -9,6 +9,9 @@ export class Camisa {
   setorId: string;
 
   @Prop()
+  remessaId: string;
+
+  @Prop()
   nomePessoa: string;
 
   @Prop()

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { computed, reactive, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useCamisaStore } from '@/stores/camisa'
+import { useRemessaStore } from '@/stores/remessa'
+
 import CamisasTable from '@/components/CamisasTable.vue'
 import DeleteCamisa from '@/components/DeleteCamisa.vue'
 import CamisaForm from '@/components/CamisaForm.vue'
@@ -26,20 +28,20 @@ const state = reactive<State>({
 })
 
 const camisaStore = useCamisaStore()
+const remessaStore = useRemessaStore()
 
-watch(
-  () => route.params.id, 
-  (value) => {
-    if (value) {
+const setorId = computed(() => route.params.id as string)
+const remessaId = computed(() => remessaStore.remessaAberta?.id ?? '')
+
+watchEffect(() => {
+  if (setorId.value && remessaId.value) {
       state.loading = 'primary'
 
-      camisaStore.fetchCamisas(value as string)
+      camisaStore.fetchCamisas(setorId.value, remessaId.value)
         .catch(() => {})
         .finally(() => state.loading = false)
-    }
-  }, 
-  { immediate: true }
-)
+  }
+})
 </script>
 
 <template>
@@ -56,6 +58,7 @@ watch(
       icon="mdi-plus"
       color="success"
       density="comfortable"
+      :disabled="!remessaStore.remessaAberta"
       @click="state.openForm = true"
     />
   </div>

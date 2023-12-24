@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateCamisaDTO {
@@ -6,6 +7,11 @@ export class CreateCamisaDTO {
   setorId: string;
 
   @IsString()
+  @IsNotEmpty()
+  remessaId: string;
+
+  @IsString()
+  @Transform(({ value }) => value?.trim())
   nomePessoa: string;
 
   @IsString()
@@ -23,6 +29,7 @@ export class CreateCamisaDTO {
 
 export class UpdateCamisaDTO {
   @IsString()
+  @Transform(({ value }) => value?.trim())
   nomePessoa: string;
 
   @IsString()

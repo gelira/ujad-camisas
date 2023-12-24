@@ -1,8 +1,8 @@
 import { apiClient } from './client'
 
-export function apiFetchCamisas(setorId: string) {
+export function apiFetchCamisas(setorId: string, remessaId: string) {
   return apiClient().get<{ camisas: Camisa[] }>('/camisa/list', {
-    params: { setorId }
+    params: { setorId, remessaId }
   })
 }
 

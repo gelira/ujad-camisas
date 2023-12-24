@@ -7,6 +7,7 @@ import { useCamisaStore } from '@/stores/camisa'
 import { useModeloStore } from '@/stores/modelo'
 import { useTamanhoStore } from '@/stores/tamanho'
 import { useAlertStore } from '@/stores/alert'
+import { useRemessaStore } from '@/stores/remessa'
 
 interface State {
   nomePessoa: string
@@ -30,6 +31,7 @@ const camisaStore = useCamisaStore()
 const modeloStore = useModeloStore()
 const tamanhoStore = useTamanhoStore()
 const alertStore = useAlertStore()
+const remessaStore = useRemessaStore()
 
 const route = useRoute()
 const form = ref<VForm>()
@@ -37,6 +39,8 @@ const form = ref<VForm>()
 const title = computed(
   () => props.camisaId ? 'Atualizar pedido' : 'Novo pedido'
 )
+
+const remessaId = computed(() => remessaStore.remessaAberta?.id ?? '')
 
 const resetForm = () => {
   state.nomePessoa = ''
@@ -57,20 +61,13 @@ const submit = async () => {
     return
   }
 
-  const now = Date.now()
-  const limit = Date.UTC(2023, 11, 18, 19, 59, 59)
-
-  if (now > limit) {
-    alertStore.showAlert('O prazo para pedidos já foi encerrado.')
-    return
-  }
-
   state.loading = 'primary'
 
   const payload = {
     nomePessoa: state.nomePessoa,
     modeloId: state.modeloId as string,
     tamanhoId: state.tamanhoId as string,
+    remessaId: remessaId.value,
     totalPago: state.totalPago
   }
 
@@ -83,7 +80,7 @@ const submit = async () => {
       await camisaStore.createCamisa({ ...payload, setorId })
     }
 
-    await camisaStore.fetchCamisas(setorId)
+    await camisaStore.fetchCamisas(setorId, remessaId.value)
     emit('close')
     resetForm()
   } catch {

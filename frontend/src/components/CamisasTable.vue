@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useCamisaStore } from '@/stores/camisa'
+import { useRemessaStore } from '@/stores/remessa'
 
 defineProps<{
   search: string,
@@ -12,6 +14,9 @@ const emit = defineEmits<{
 }>()
 
 const camisaStore = useCamisaStore()
+const remessaStore = useRemessaStore()
+
+const remessaDescricao = computed(() => remessaStore.remessaAberta?.descricao ?? '')
 
 const HEADERS = [
   {
@@ -74,8 +79,15 @@ const HEADERS = [
     </template>
 
     <template v-slot:bottom>
-      <div class="table-footer-container" v-if="!loading">
-        <p>Total de pedidos: {{ camisaStore.camisas.length }}</p>
+      <div class="table-footer-container" v-if="!loading && remessaStore.remessaAberta">
+        <div>
+          <p>{{ remessaDescricao }}</p>
+          <p>Total de pedidos: {{ camisaStore.camisas.length }}</p>
+        </div>
+        <div>
+          <p>Data limite:</p>
+          <p>{{ remessaStore.dataLimite }}</p>
+        </div>
       </div>
     </template>
   </v-data-table>
@@ -93,6 +105,8 @@ const HEADERS = [
 .table-footer-container {
   border-top: 1px solid rgba(0, 0, 0, 0.12);
   padding: 8px 0 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .delete-button {

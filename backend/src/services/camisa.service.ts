@@ -57,9 +57,9 @@ export class CamisaService {
     await camisa.save();
   }
 
-  async findBySetor(setorId: string) {
+  async findBySetorRemessa(setorId: string, remessaId: string) {
     return this.camisaModel
-      .find({ setorId, deletedAt: null })
+      .find({ setorId, remessaId, deletedAt: null })
       .sort({ nomePessoa: 1, createdAt: 1 });
   }
 
