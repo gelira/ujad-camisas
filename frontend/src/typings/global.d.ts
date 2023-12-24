@@ -31,6 +31,14 @@ declare global {
     tamanhoId: string
     tamanhoDescricao: string
   }
+
+  interface Remessa {
+    id: string
+    descricao: string
+    abertoManual: boolean
+    inicio: string
+    final: string
+  }
   
   interface CreateCamisa {
     setorId: string
