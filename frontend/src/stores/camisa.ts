@@ -12,8 +12,8 @@ export const useCamisaStore = defineStore('camisa', () => {
 
   const camisas = computed(() => state.camisas)
 
-  const fetchCamisas = async (setorId: string) => {
-    const { data } = await apiFetchCamisas(setorId)
+  const fetchCamisas = async (setorId: string, remessaId: string) => {
+    const { data } = await apiFetchCamisas(setorId, remessaId)
     state.camisas = data.camisas
   }
 
