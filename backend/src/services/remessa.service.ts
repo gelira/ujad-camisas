@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Remessa, RemessaDocument } from 'src/schemas/remessa.schema';
 
@@ -36,16 +36,18 @@ export class RemessaService {
   }
 
   checkAberta(remessa: RemessaDocument) {
-    if (!remessa) {
-      return false;
+    if (remessa) {
+      if (remessa.abertoManual) {
+        return;
+      }
+
+      const now = new Date();
+  
+      if (remessa.inicio <= now && remessa.final > now) {
+        return;
+      }
     }
 
-    if (remessa.abertoManual) {
-      return true;
-    }
-
-    const now = new Date();
-
-    return remessa.inicio <= now && remessa.final > now;
+    throw new BadRequestException('Remessa não está aberta');
   }
 }
