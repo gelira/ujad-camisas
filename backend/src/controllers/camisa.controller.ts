@@ -52,10 +52,11 @@ export class CamisaController {
   async listCamisas(
     @RequestUser() user: UserDocument,
     @Query('setorId') setorId: string,
+    @Query('remessaId') remessaId: string,
   ) {
     await this.setorService.findById(setorId, !user.admin && user.id);
 
-    const camisas = (await this.camisaService.findBySetor(setorId)).map(
+    const camisas = (await this.camisaService.findBySetorRemessa(setorId, remessaId)).map(
       ({
         id,
         nomePessoa,
