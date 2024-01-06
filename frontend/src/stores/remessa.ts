@@ -1,16 +1,18 @@
 import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 
-import { apiFetchRemessaAberta } from '@/api/remessa'
+import { apiFetchRemessas, apiFetchRemessaAberta } from '@/api/remessa'
 
 interface State {
   remessaAberta: Remessa | null
+  remessas: RemessaItem[]
 }
 
 export const useRemessaStore = defineStore('remessa', () => {
-  const state = reactive<State>({ remessaAberta: null })
+  const state = reactive<State>({ remessaAberta: null, remessas: [] })
 
   const remessaAberta = computed(() => state.remessaAberta)
+  const remessas = computed(() => state.remessas)
 
   const dataLimite = computed(() => {
     if (state.remessaAberta?.abertoManual) {
@@ -47,10 +49,21 @@ export const useRemessaStore = defineStore('remessa', () => {
     }
   }
 
+  const fetchRemessas = async () => {
+    try {
+      const { data } = await apiFetchRemessas()
+      state.remessas = data.remessas
+    } catch {
+      state.remessas = []
+    }
+  }
+
   return {
     state,
     remessaAberta,
     dataLimite,
+    remessas,
     fetchRemessaAberta,
+    fetchRemessas,
   }
 })
