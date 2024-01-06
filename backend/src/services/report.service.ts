@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import Handlebars from 'handlebars';
 import { generatePdf } from 'html-pdf-node-ts';
 import { ModeloDocument } from 'src/schemas/modelo.schema';
 import { TamanhoDocument } from 'src/schemas/tamanho.schema';
+import { RemessaDocument } from 'src/schemas/remessa.schema';
 
 import { SetorService } from './setor.service';
 import { ModeloService } from './modelo.service';
 import { CamisaService } from './camisa.service';
 import { TamanhoService } from './tamanho.service';
+import { RemessaService } from './remessa.service';
 
 @Injectable()
 export class ReportService {
@@ -18,10 +20,17 @@ export class ReportService {
     private modeloService: ModeloService,
     private tamanhoService: TamanhoService,
     private camisaService: CamisaService,
+    private remessaService: RemessaService,
   ) {}
 
-  async generateReportAllCamisas() {
-    const pedidos = await this.countCamisas();
+  async generateReportCamisasRemessa(remessaId: string) {
+    const remessa = await this.remessaService.findById(remessaId);
+
+    if (!remessa) {
+      throw new NotFoundException('Remessa não encontrada');
+    }
+
+    const pedidos = await this.countCamisasRemessa(remessa);
 
     const file = readFileSync(
       join(process.cwd(), 'src', 'templates', 'report.handlebars'),
@@ -32,6 +41,9 @@ export class ReportService {
 
     const content = template({
       pedidos,
+      remessaDescricao: remessa.descricao,
+      remessaInicio: remessa.inicio.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
+      remessaFinal: remessa.final.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
       timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
     });
 
@@ -46,7 +58,7 @@ export class ReportService {
     return `data:application/pdf;base64,${buffer.toString('base64')}`;
   }
 
-  private async countCamisas() {
+  private async countCamisasRemessa(remessa: RemessaDocument) {
     const [setores, modelos, tamanhos] = await Promise.all([
       this.setorService.findAll(),
       this.modeloService.findAll(),
@@ -54,21 +66,26 @@ export class ReportService {
     ]);
 
     const data = await Promise.all([
-      this.countCamisasByModelosSetor(modelos, tamanhos, 'Geral'),
-      ...setores.map(({ id, nome }) => this.countCamisasByModelosSetor(modelos, tamanhos, nome, id)),
+      this.countCamisasByRemessaModelosSetor(remessa, modelos, tamanhos, 'Geral'),
+      ...setores.map(
+        ({ id, nome }) => 
+          this.countCamisasByRemessaModelosSetor(remessa, modelos, tamanhos, nome, id)
+      ),
     ]);
 
     return data;
   }
 
-  private async countCamisasByModelosSetor(
+  private async countCamisasByRemessaModelosSetor(
+    remessa: RemessaDocument,
     modelos: ModeloDocument[],
     tamanhos: TamanhoDocument[],
     setorNome: string,
     setorId?: string
   ) {
     const quantidadesModelos = await Promise.all(modelos.map(async (modelo) => {
-      const quantidade = await this.countCamisasByTamanhosModelo(
+      const quantidade = await this.countCamisasByRemessaTamanhosModelo(
+        remessa,
         modelo,
         tamanhos,
         setorId,
@@ -84,13 +101,15 @@ export class ReportService {
     };
   }
 
-  private async countCamisasByTamanhosModelo(
+  private async countCamisasByRemessaTamanhosModelo(
+    remessa: RemessaDocument,
     modelo: ModeloDocument,
     tamanhos: TamanhoDocument[],
     setorId?: string,
   ) {
     const quantidadesTamanhos = await Promise.all(tamanhos.map(async (tamanho) => {
-      const quantidade = await this.camisaService.countByModeloTamanho(
+      const quantidade = await this.camisaService.countByRemessaModeloTamanho(
+        remessa.id,
         modelo.id,
         tamanho.id,
         setorId,
