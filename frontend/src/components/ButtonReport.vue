@@ -9,9 +9,11 @@ const remessaStore = useRemessaStore()
 
 const icon = ref<IconRef>('mdi-file-pdf-box')
 
-function generateReport(id: string) {
+function generateReport(remessaId?: string) {
   icon.value = 'mdi-loading mdi-spin'
-  apiClient().get<{ report: string }>(`/report/remessa/${id}`)
+  apiClient().get<{ report: string }>('/report/pedidos-camisas', {
+    params: { remessaId },
+  })
     .then(({ data }) => {
       const dt = new Date();
 
@@ -54,13 +56,15 @@ onMounted(() => remessaStore.fetchRemessas())
 
     <v-list>
       <v-list-item
+        title="Geral"
+        @click="generateReport()"
+      />
+      <v-list-item
         v-for="({ id, descricao }) in remessaStore.remessas"
         :key="id"
-      >
-        <v-list-item-title @click="generateReport(id)">
-          {{ descricao }}
-        </v-list-item-title>
-      </v-list-item>
+        :title="descricao"
+        @click="generateReport(id)"
+      />
     </v-list>
   </v-menu>
 </template>
