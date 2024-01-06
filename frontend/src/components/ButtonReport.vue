@@ -3,9 +3,11 @@ import { ref, onMounted } from 'vue'
 import { apiClient } from '@/api/client'
 import { useRemessaStore } from '@/stores/remessa'
 
+type IconRef = 'mdi-file-pdf-box' | 'mdi-loading mdi-spin'
+
 const remessaStore = useRemessaStore()
 
-const icon = ref('mdi-file-pdf-box')
+const icon = ref<IconRef>('mdi-file-pdf-box')
 
 function generateReport(id: string) {
   icon.value = 'mdi-loading mdi-spin'
