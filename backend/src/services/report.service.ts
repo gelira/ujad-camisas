@@ -23,14 +23,18 @@ export class ReportService {
     private remessaService: RemessaService,
   ) {}
 
-  async generateReportCamisasRemessa(remessaId: string) {
-    const remessa = await this.remessaService.findById(remessaId);
+  async generateReportPedidosCamisas(remessaId?: string) {
+    let remessa: RemessaDocument | undefined;
 
-    if (!remessa) {
-      throw new NotFoundException('Remessa não encontrada');
+    if (remessaId) {
+      remessa = await this.remessaService.findById(remessaId);
+
+      if (!remessa) {
+        throw new NotFoundException('Remessa não encontrada');
+      }
     }
 
-    const pedidos = await this.countCamisasRemessa(remessa);
+    const pedidos = await this.countCamisas(remessaId);
 
     const file = readFileSync(
       join(process.cwd(), 'src', 'templates', 'report.handlebars'),
@@ -41,10 +45,10 @@ export class ReportService {
 
     const content = template({
       pedidos,
-      remessaDescricao: remessa.descricao,
-      remessaInicio: remessa.inicio.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
-      remessaFinal: remessa.final.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
       timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
+      remessaDescricao: remessa?.descricao ?? 'Relatório Geral',
+      remessaInicio: remessa?.inicio.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
+      remessaFinal: remessa?.final.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
     });
 
     const buffer = await generatePdf(
@@ -58,7 +62,7 @@ export class ReportService {
     return `data:application/pdf;base64,${buffer.toString('base64')}`;
   }
 
-  private async countCamisasRemessa(remessa: RemessaDocument) {
+  private async countCamisas(remessaId?: string) {
     const [setores, modelos, tamanhos] = await Promise.all([
       this.setorService.findAll(),
       this.modeloService.findAll(),
@@ -66,30 +70,36 @@ export class ReportService {
     ]);
 
     const data = await Promise.all([
-      this.countCamisasByRemessaModelosSetor(remessa, modelos, tamanhos, 'Geral'),
+      this.countCamisasByModelosSetor({ modelos, tamanhos, setorNome: 'Geral', remessaId }),
       ...setores.map(
         ({ id, nome }) => 
-          this.countCamisasByRemessaModelosSetor(remessa, modelos, tamanhos, nome, id)
+          this.countCamisasByModelosSetor({ modelos, tamanhos, setorNome: nome, setorId: id, remessaId }),
       ),
     ]);
 
     return data;
   }
 
-  private async countCamisasByRemessaModelosSetor(
-    remessa: RemessaDocument,
+  private async countCamisasByModelosSetor({
+    modelos,
+    tamanhos,
+    setorNome,
+    setorId,
+    remessaId,
+  }: {
     modelos: ModeloDocument[],
     tamanhos: TamanhoDocument[],
     setorNome: string,
-    setorId?: string
-  ) {
+    setorId?: string,
+    remessaId?: string,
+  }) {
     const quantidadesModelos = await Promise.all(modelos.map(async (modelo) => {
-      const quantidade = await this.countCamisasByRemessaTamanhosModelo(
-        remessa,
+      const quantidade = await this.countCamisasByTamanhosModelo({
         modelo,
         tamanhos,
         setorId,
-      );
+        remessaId,
+    });
 
       return quantidade;
     }));
@@ -101,19 +111,24 @@ export class ReportService {
     };
   }
 
-  private async countCamisasByRemessaTamanhosModelo(
-    remessa: RemessaDocument,
+  private async countCamisasByTamanhosModelo({
+    modelo,
+    tamanhos,
+    setorId,
+    remessaId,
+  }: {
     modelo: ModeloDocument,
     tamanhos: TamanhoDocument[],
     setorId?: string,
-  ) {
+    remessaId?: string,
+  }) {
     const quantidadesTamanhos = await Promise.all(tamanhos.map(async (tamanho) => {
-      const quantidade = await this.camisaService.countByRemessaModeloTamanho(
-        remessa.id,
-        modelo.id,
-        tamanho.id,
+      const quantidade = await this.camisaService.countByModeloTamanho({
+        modeloId: modelo.id,
+        tamanhoId: tamanho.id,
         setorId,
-      );
+        remessaId,
+    });
 
       return { tamanho: tamanho.descricao, quantidade };
     }));
