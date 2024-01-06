@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from 'src/guards/admin.guard';
 
 import { ReportService } from 'src/services/report.service';
@@ -8,9 +8,9 @@ export class ReportController {
   constructor(private reportService: ReportService) {}
 
   @UseGuards(AdminGuard)
-  @Get('remessa/:remessaId')
-  async remessaCamisasReport(@Param('remessaId') remessaId: string) {
-    const report = await this.reportService.generateReportCamisasRemessa(remessaId);
+  @Get('pedidos-camisas')
+  async pedidosCamisasReport(@Query('remessaId') remessaId?: string) {
+    const report = await this.reportService.generateReportPedidosCamisas(remessaId);
 
     return { report };
   }
