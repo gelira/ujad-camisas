@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { apiClient } from '@/api/client'
+import { useRemessaStore } from '@/stores/remessa'
+
+const remessaStore = useRemessaStore()
 
 const icon = ref('mdi-file-pdf-box')
 
-const generateReport = () => {
+function generateReport(id: string) {
   icon.value = 'mdi-loading mdi-spin'
-  apiClient().get<{ report: string }>('/report/all')
+  apiClient().get<{ report: string }>(`/report/remessa/${id}`)
     .then(({ data }) => {
       const dt = new Date();
 
@@ -31,16 +34,33 @@ const generateReport = () => {
       icon.value = 'mdi-file-pdf-box'
     })
 }
+
+onMounted(() => remessaStore.fetchRemessas())
 </script>
 
 <template>
-  <v-btn
-    variant="elevated"
-    color="primary"
-    text="Gerar relatório"
-    :append-icon="icon"
-    @click="generateReport"
-  />
+  <v-menu>
+    <template v-slot:activator="{ props }">
+      <v-btn
+        v-bind="props"
+        variant="elevated"
+        color="primary"
+        text="Gerar relatório"
+        :append-icon="icon"
+      />
+    </template>
+
+    <v-list>
+      <v-list-item
+        v-for="({ id, descricao }) in remessaStore.remessas"
+        :key="id"
+      >
+        <v-list-item-title @click="generateReport(id)">
+          {{ descricao }}
+        </v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 
 <style scoped>
