@@ -8,6 +8,16 @@ export class RemessaController {
   constructor(private remessaService: RemessaService) {}
 
   @UseGuards(AuthGuard)
+  @Get('list')
+  async listRemessas() {
+    const remessas = (await this.remessaService.findAll()).map(
+      ({ id, descricao }) => ({ id, descricao }),
+    );
+
+    return { remessas };
+  }
+
+  @UseGuards(AuthGuard)
   @Get('aberta')
   async remessaAberta() {
     const {
