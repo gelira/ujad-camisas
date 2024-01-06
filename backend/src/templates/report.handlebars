@@ -72,7 +72,9 @@
     <div class="container">
       <h1 class="header-title">UJAD Camisas - Relatório de pedidos</h1>
       <h2 class="header-subtitle">Curimataú e Seridó Paraibano</h2>
-      <h3 class="remessa-description">{{../remessaDescricao}}: de {{../remessaInicio}} até {{../remessaFinal}}</h3>
+      <h3 class="remessa-description">
+        {{../remessaDescricao}}{{#if ../remessaInicio}}: de {{../remessaInicio}} até {{../remessaFinal}}{{/if}}
+      </h3>
       <p class="header-timestamp">Relatório gerado em {{../timestamp}}</p>
 
       <div class="summary-setor">
