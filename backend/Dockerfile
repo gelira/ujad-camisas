@@ -6,8 +6,7 @@ RUN apt update \
         libgdk-pixbuf2.0-dev \
         libgtk-3-dev \
         libxss-dev \
-        libasound2 \
-    && rm -rf /var/lib/apt/lists/*
+        libasound2
 
 WORKDIR /app
 
