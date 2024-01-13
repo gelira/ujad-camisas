@@ -63,6 +63,12 @@ export class CamisaService {
       .sort({ nomePessoa: 1, createdAt: 1 });
   }
 
+  async findBySetor(setorId: string) {
+    return this.camisaModel
+      .find({ setorId, deletedAt: null })
+      .sort({ nomePessoa: 1, createdAt: 1 });
+  }
+
   async countByModeloTamanho({
     modeloId,
     tamanhoId,
@@ -79,6 +85,13 @@ export class CamisaService {
       ...(remessaId && { remessaId }),
       modeloId,
       tamanhoId,
+      deletedAt: null,
+    });
+  }
+
+  async countBySetor(setorId: string) {
+    return this.camisaModel.countDocuments({
+      setorId,
       deletedAt: null,
     });
   }

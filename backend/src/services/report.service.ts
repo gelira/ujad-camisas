@@ -6,6 +6,7 @@ import { generatePdf } from 'html-pdf-node-ts';
 import { ModeloDocument } from 'src/schemas/modelo.schema';
 import { TamanhoDocument } from 'src/schemas/tamanho.schema';
 import { RemessaDocument } from 'src/schemas/remessa.schema';
+import { SetorDocument } from 'src/schemas/setor.schema';
 
 import { SetorService } from './setor.service';
 import { ModeloService } from './modelo.service';
@@ -36,12 +37,35 @@ export class ReportService {
 
     const pedidos = await this.countCamisas(remessaId);
 
-    return this.buildPDF('counting.handlebars', {
+    return await this.buildPDF('counting.handlebars', {
       pedidos,
       timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
       remessaDescricao: remessa?.descricao ?? 'Geral',
       remessaInicio: remessa?.inicio.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
       remessaFinal: remessa?.final.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
+    });
+  }
+
+  async generateReportListaPedidos(setoresToList: SetorDocument[]) {
+    const setores = await Promise.all(setoresToList.map(async (setor) => {
+      const quantidadeSetor = await this.camisaService.countBySetor(setor.id)
+      
+      const pedidos = (await this.camisaService.findBySetor(setor.id))
+        .map(({ nomePessoa, modeloDescricao, tamanhoDescricao }) => ({
+          nomePessoa,
+          modeloTamanho: `${modeloDescricao} - ${tamanhoDescricao}`,
+        }));
+
+      return {
+        setorNome: setor.nome,
+        quantidadeSetor,
+        pedidos,
+      }
+    }));
+
+    return await this.buildPDF('listing.handlebars', {
+      setores,
+      timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
     });
   }
 
