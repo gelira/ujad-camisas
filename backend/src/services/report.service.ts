@@ -36,20 +36,24 @@ export class ReportService {
 
     const pedidos = await this.countCamisas(remessaId);
 
+    return this.buildPDF('counting.handlebars', {
+      pedidos,
+      timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
+      remessaDescricao: remessa?.descricao ?? 'Geral',
+      remessaInicio: remessa?.inicio.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
+      remessaFinal: remessa?.final.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
+    });
+  }
+
+  private async buildPDF(reportTemplate: string, context: any) {
     const file = readFileSync(
-      join(process.cwd(), 'src', 'templates', 'report.handlebars'),
+      join(process.cwd(), 'src', 'templates', reportTemplate),
       { encoding: 'utf8' },
     );
 
     const template = Handlebars.compile(file);
 
-    const content = template({
-      pedidos,
-      timestamp: new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' }),
-      remessaDescricao: remessa?.descricao ?? 'Relatório Geral',
-      remessaInicio: remessa?.inicio.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
-      remessaFinal: remessa?.final.toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' }),
-    });
+    const content = template(context);
 
     const buffer = await generatePdf(
       { content },
