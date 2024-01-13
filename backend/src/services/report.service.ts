@@ -52,7 +52,7 @@ export class ReportService {
       
       const pedidos = (await this.camisaService.findBySetor(setor.id))
         .map(({ nomePessoa, modeloDescricao, tamanhoDescricao }) => ({
-          nomePessoa,
+          nomePessoa: nomePessoa.trim() || '[Sem nome]',
           modeloTamanho: `${modeloDescricao} - ${tamanhoDescricao}`,
         }));
 
