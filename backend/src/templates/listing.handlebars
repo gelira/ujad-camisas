@@ -1,0 +1,83 @@
+<html>
+<head>
+  <style>
+    .header-title {
+      font-size: 24px;
+      text-align: center;
+      margin: 0 0 10px;
+    }
+
+    .header-subtitle {
+      text-align: center;
+      font-size: 20px;
+      margin: 0 0 10px;
+    }
+
+    .remessa-description {
+      text-align: center;
+      font-size: 18px;
+      margin: 0 0 16px;
+    }
+
+    .header-timestamp {
+      font-size: 14px;
+    }
+
+    .summary-setor, .table-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .summary-setor {
+      margin: 0 0 16px;
+    }
+
+    .summary-setor h2 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .table p {
+      margin: 0;
+      font-size: 14px;
+      max-width: 50%;
+    }
+
+    .table-line {
+      padding: 10px 0;
+      border-bottom: 1px solid #000;
+    }
+
+    @media print {
+      .container {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  {{#each setores}}
+    <div class="container">
+      <h1 class="header-title">UJAD Camisas - Relatório de pedidos</h1>
+      <h2 class="header-subtitle">Curimataú e Seridó Paraibano</h2>
+      <h3 class="remessa-description">Lista de pedidos</h3>
+      <p class="header-timestamp">Relatório gerado em {{../timestamp}}</p>
+
+      <div class="summary-setor">
+        <h2>{{setorNome}}</h2>
+        <h2>Total de pedidos: {{quantidadeSetor}}</h2>
+      </div>
+
+      <div class="table">
+        {{#each pedidos}}
+          <div class="table-line">
+            <p>{{nomePessoa}}</p>
+            <p>{{modeloTamanho}}</p>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/each}}
+</body>
+</html>
