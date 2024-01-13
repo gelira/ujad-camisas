@@ -56,6 +56,9 @@ export class ReportService {
       {
         format: 'A4',
         margin: { top: '2cm', right: '2cm', bottom: '2cm', left: '2cm' },
+        displayHeaderFooter: true,
+        headerTemplate: '<span></span>',
+        footerTemplate: '<span style="font-size: 12px; width: 100%; text-align: right; margin: 0 20px"><span class="pageNumber"></span>/<span class="totalPages"></span></span>'
       },
     );
 
