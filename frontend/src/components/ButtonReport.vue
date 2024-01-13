@@ -1,19 +1,34 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { apiClient } from '@/api/client'
+import {
+  apiFetchListingCamisasReport,
+  apiFetchCountingCamisasReport,
+} from '@/api/reports'
+
+import { useAuthStore } from '@/stores/auth'
 import { useRemessaStore } from '@/stores/remessa'
+import { useSetorStore } from '@/stores/setor'
 
 type IconRef = 'mdi-file-pdf-box' | 'mdi-loading mdi-spin'
+type ReportType = 'counting' | 'listing'
 
+const authStore = useAuthStore()
 const remessaStore = useRemessaStore()
+const setorStore = useSetorStore()
 
-const icon = ref<IconRef>('mdi-file-pdf-box')
+const countingIcon = ref<IconRef>('mdi-file-pdf-box')
+const listingIcon = ref<IconRef>('mdi-file-pdf-box')
 
-function generateReport(remessaId?: string) {
+function generateReport(reportType: ReportType, id?: string) {
+  const apiCall = reportType === 'counting'
+    ? apiFetchCountingCamisasReport
+    : apiFetchListingCamisasReport
+
+  const icon = reportType === 'counting' ? countingIcon : listingIcon
+
   icon.value = 'mdi-loading mdi-spin'
-  apiClient().get<{ report: string }>('/report/pedidos-camisas', {
-    params: { remessaId },
-  })
+  
+  apiCall(id)
     .then(({ data }) => {
       const dt = new Date();
 
@@ -39,37 +54,75 @@ function generateReport(remessaId?: string) {
     })
 }
 
-onMounted(() => remessaStore.fetchRemessas())
+onMounted(() => {
+  remessaStore.fetchRemessas()
+  setorStore.fetchSetores()
+})
 </script>
 
 <template>
-  <v-menu>
-    <template v-slot:activator="{ props }">
-      <v-btn
-        v-bind="props"
-        variant="elevated"
-        color="primary"
-        text="Gerar relatório"
-        :append-icon="icon"
-      />
-    </template>
-
-    <v-list>
-      <v-list-item
-        title="Geral"
-        @click="generateReport()"
-      />
-      <v-list-item
-        v-for="({ id, descricao }) in remessaStore.remessas"
-        :key="id"
-        :title="descricao"
-        @click="generateReport(id)"
-      />
-    </v-list>
-  </v-menu>
+  <div class="container">
+    <v-menu v-if="authStore.admin">
+      <template v-slot:activator="{ props }">
+        <v-btn
+          v-bind="props"
+          variant="elevated"
+          color="primary"
+          text="Gerar relatório de contagem de pedidos"
+          :append-icon="countingIcon"
+        />
+      </template>
+  
+      <v-list>
+        <v-list-item
+          title="Geral"
+          @click="generateReport('counting')"
+        />
+        <v-list-item
+          v-for="({ id, descricao }) in remessaStore.remessas"
+          :key="id"
+          :title="descricao"
+          @click="generateReport('counting', id)"
+        />
+      </v-list>
+    </v-menu>
+  
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn
+          v-bind="props"
+          variant="elevated"
+          color="primary"
+          text="Gerar relatório de lista de pedidos"
+          :append-icon="listingIcon"
+        />
+      </template>
+  
+      <v-list>
+        <v-list-item
+          title="Geral"
+          v-if="authStore.admin"
+          @click="generateReport('listing')"
+        />
+        <v-list-item
+          v-for="({ id, nome }) in setorStore.setores"
+          :key="id"
+          :title="nome"
+          @click="generateReport('listing', id)"
+        />
+      </v-list>
+    </v-menu>
+  </div>
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
 .v-card-actions {
   justify-content: flex-end;
 }

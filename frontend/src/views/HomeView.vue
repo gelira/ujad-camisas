@@ -25,17 +25,6 @@ onMounted(() => {
         setorStore.fetchSetores(),
         remessaStore.fetchRemessaAberta()
       ])
-
-      if (authStore.admin || route.name === 'camisas' || setorStore.setores.length === 0) {
-        return
-      }
-
-      router.push({
-        name: 'camisas',
-        params: {
-          id: setorStore.setores[0].id
-        }
-      })
     } catch {
       router.push({ name: 'login' })
     }
@@ -46,9 +35,7 @@ onMounted(() => {
 <template>
   <AppBar />
   <v-container>
-    <ButtonReport
-      v-if="authStore.admin && route.name === 'home'"
-    />
+    <ButtonReport v-if="route.name === 'home'" />
     <RouterView />
   </v-container>
 </template>
