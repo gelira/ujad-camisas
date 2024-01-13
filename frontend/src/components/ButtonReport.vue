@@ -68,7 +68,7 @@ onMounted(() => {
           v-bind="props"
           variant="elevated"
           color="primary"
-          text="Gerar relatório de contagem de pedidos"
+          text="Contagem de pedidos"
           :append-icon="countingIcon"
         />
       </template>
@@ -93,7 +93,7 @@ onMounted(() => {
           v-bind="props"
           variant="elevated"
           color="primary"
-          text="Gerar relatório de lista de pedidos"
+          text="Lista de pedidos"
           :append-icon="listingIcon"
         />
       </template>
