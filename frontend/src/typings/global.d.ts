@@ -2,6 +2,7 @@ declare global {
   interface UserInfo {
     nome: string
     email: string
+    picture: string
     admin: boolean
   }
 
@@ -61,4 +62,5 @@ declare global {
   }
 }
 
-export {}
+export { }
+
