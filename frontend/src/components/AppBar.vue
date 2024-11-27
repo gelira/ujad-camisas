@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
@@ -32,6 +32,14 @@ const setorId = computed(() => route.params.id as string)
 
 const setorMenuOpen = computed(() => state.menuOpen.includes('setores'))
 
+const vListItemProps = computed(() => ({
+  title: authStore.nome,
+  ...(authStore.picture
+      ? { appendAvatar: authStore.picture }
+      : { appendIcon: 'mdi-account-circle' }
+  )
+}))
+
 const toggle = () => {
   state.drawerOpen = !state.drawerOpen
 }
@@ -61,10 +69,7 @@ const logout = () => {
     temporary
   >
     <v-list v-model:opened="state.menuOpen">
-      <v-list-item
-        append-icon="mdi-account-circle"
-        :title="authStore.nome"
-      />
+      <v-list-item v-bind="vListItemProps" />
       <v-divider />
       <v-list-group
         value="setores"
