@@ -9,10 +9,16 @@ export class User {
   nome: string;
 
   @Prop()
+  picture: string;
+
+  @Prop()
   email: string;
 
   @Prop()
   admin: boolean;
+
+  @Prop()
+  active: boolean;
 
   @Prop(() => Date)
   createdAt: Date;

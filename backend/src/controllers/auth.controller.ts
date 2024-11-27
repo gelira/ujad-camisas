@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
@@ -27,23 +28,49 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('user-info')
   info(@RequestUser() user: User) {
-    const { nome, email, admin } = user;
+    const { nome, email, admin, picture } = user;
 
-    return { nome, email, admin };
+    return { nome, email, admin, picture };
   }
 
   @Post('google')
   @HttpCode(HttpStatus.OK)
   async authGoogle(@Body() authDTO: AuthDTO) {
-    const { email, name } = await this.googleService.validateCredential(
-      authDTO.credential,
-    );
+    let email: string;
+    let name: string;
+    let picture: string;
+
+    try {
+      const validatedData = await this.googleService.validateCredential(
+        authDTO.credential,
+      );
+
+      email = validatedData.email;
+      name = validatedData.name;
+      picture = validatedData.picture;
+    } catch {
+      throw new UnauthorizedException('Invalid credential');
+    }
 
     const user = await this.userService.findByEmail(email);
 
-    if (!user.nome) {
-      user.nome = name;
+    if (!user || !user.active) {
+      throw new UnauthorizedException('User not found');
+    }
 
+    let toUpdate = false;
+
+    if (user.nome !== name) {
+      user.nome = name;
+      toUpdate = true;
+    }
+
+    if (user.picture !== picture) {
+      user.picture = picture;
+      toUpdate = true;
+    }
+
+    if (toUpdate) {
       await user.save();
     }
 
