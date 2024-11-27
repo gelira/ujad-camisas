@@ -1,5 +1,5 @@
-import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
+import { computed, reactive } from 'vue'
 
 import { apiFetchTamanhos } from '@/api/tamanho'
 
@@ -18,7 +18,6 @@ export const useTamanhoStore = defineStore('tamanho', () => {
   }
 
   return {
-    state,
     tamanhos,
     fetchTamanhos
   }

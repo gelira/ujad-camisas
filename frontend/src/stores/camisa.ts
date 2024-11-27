@@ -33,7 +33,6 @@ export const useCamisaStore = defineStore('camisa', () => {
   }
 
   return {
-    state,
     camisas,
     fetchCamisas,
     findById,

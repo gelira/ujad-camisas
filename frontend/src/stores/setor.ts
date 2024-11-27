@@ -25,7 +25,6 @@ export const useSetorStore = defineStore('setor', () => {
   }
 
   return {
-    state,
     setores,
     setorSelected,
     fetchSetores

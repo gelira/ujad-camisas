@@ -8,11 +8,13 @@ export const useAuthStore = defineStore('auth', () => {
   const state = reactive<UserInfo>({
     nome: '',
     email: '',
+    picture: '',
     admin: false
   })
 
   const nome = computed(() => state.nome)
   const email = computed(() => state.email)
+  const picture = computed(() => state.picture)
   const admin = computed(() => state.admin)
 
   const validateAccessToken = async () => {
@@ -21,6 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
       state.nome = data.nome
       state.email = data.email
       state.admin = data.admin
+      state.picture = data.picture
     } catch (e) {
       removeToken()
       throw e
@@ -33,9 +36,9 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    state,
     nome,
     email,
+    picture,
     admin,
     validateAccessToken,
     validateGoogleCredential

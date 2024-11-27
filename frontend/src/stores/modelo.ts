@@ -18,7 +18,6 @@ export const useModeloStore = defineStore('modelo', () => {
   }
 
   return {
-    state,
     modelos,
     fetchModelos
   }

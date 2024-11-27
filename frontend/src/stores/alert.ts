@@ -1,5 +1,5 @@
-import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
+import { computed, reactive } from 'vue'
 
 interface State {
   alertOpen: boolean
@@ -35,7 +35,6 @@ export const useAlertStore = defineStore('alert', () => {
   }
 
   return {
-    state,
     alertOpen,
     alertMessage,
     showAlert,

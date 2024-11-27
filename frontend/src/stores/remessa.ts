@@ -59,7 +59,6 @@ export const useRemessaStore = defineStore('remessa', () => {
   }
 
   return {
-    state,
     remessaAberta,
     dataLimite,
     remessas,
