@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter, useRoute, RouterView } from 'vue-router'
+import { onMounted, watch } from 'vue'
+import { RouterView, useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
-import { useSetorStore } from '@/stores/setor'
 import { useRemessaStore } from '@/stores/remessa'
+import { useSetorStore } from '@/stores/setor'
 
 import AppBar from '@/components/AppBar.vue'
-import ButtonReport from '@/components/ButtonReport.vue'
 
 const router = useRouter()
-const route = useRoute()
-
 const authStore = useAuthStore()
 const setorStore = useSetorStore()
 const remessaStore = useRemessaStore()
@@ -23,6 +20,7 @@ onMounted(() => {
 
       await Promise.all([
         setorStore.fetchSetores(),
+        remessaStore.fetchRemessas(),
         remessaStore.fetchRemessaAberta()
       ])
     } catch {
@@ -30,12 +28,20 @@ onMounted(() => {
     }
   })()
 })
+
+watch(
+  () => setorStore.setores,
+  (v) => {
+    if (v.length > 0) {
+      router.push({ name: 'camisas', params: { id: v[0].id } })
+    }
+  }
+)
 </script>
 
 <template>
   <AppBar />
   <v-container>
-    <ButtonReport v-if="route.name === 'home'" />
     <RouterView />
   </v-container>
 </template>

@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useSetorStore } from '@/stores/setor'
 import { removeToken } from '@/utils/token'
+
 import RelatoriosMenu from './RelatoriosMenu.vue'
 import SetoresMenu from './SetoresMenu.vue'
 
