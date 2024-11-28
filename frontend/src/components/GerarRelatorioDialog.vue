@@ -51,10 +51,9 @@ onMounted(() => {
   <slot :openDialog="openDialog"></slot>
 
   <v-dialog v-model="state.open" persistent>
-    <v-card width="600px" :title="title">
+    <v-card :title="title" :subtitle="subtitle">
       <v-card-text>
         <v-select
-          :label="subtitle"
           :items="listValuesComputed"
           v-model:model-value="state.selectedId"
           item-title="label"
@@ -63,11 +62,17 @@ onMounted(() => {
         </v-select>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="closeDialog">
+        <v-btn
+          @click="closeDialog"
+          color="error"
+        >
           Cancelar
         </v-btn>
-        <v-btn @click="generateReport">
-          Gerar
+        <v-btn
+          @click="generateReport"
+          color="primary"
+        >
+          Gerar relatório
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -77,5 +82,15 @@ onMounted(() => {
 <style scoped>
 :deep(.v-overlay__content) {
   align-items: center;
+}
+
+.v-card-actions {
+  justify-content: flex-end;
+}
+
+@media screen and (min-width: 64em) {
+  .v-card {
+    width: 600px;
+  }
 }
 </style>

@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import {
   apiFetchCountingCamisasReport,
   apiFetchListingCamisasReport,
 } from '@/api/reports';
-import { computed } from 'vue';
-
 import { useRemessaStore } from '@/stores/remessa';
 import { useSetorStore } from '@/stores/setor';
+
 import GerarRelatorioDialog from './GerarRelatorioDialog.vue';
 
 const setorStore = useSetorStore()
@@ -53,7 +54,7 @@ function generateReport(reportType: 'counting' | 'listing', id?: string) {
 
 <template>
   <GerarRelatorioDialog
-    title="Gerar relatório - Contagem de pedidos"
+    title="Contagem de pedidos"
     subtitle="Selecione a remessa"
     :listValues="listRemessasComputed"
     @generate="generateReport('counting', $event)"
@@ -68,7 +69,7 @@ function generateReport(reportType: 'counting' | 'listing', id?: string) {
   </GerarRelatorioDialog>
   <v-divider />
   <GerarRelatorioDialog
-    title="Gerar relatório - Lista de camisas"
+    title="Lista de camisas"
     subtitle="Selecione o setor"
     :listValues="listSetoresComputed"
     @generate="generateReport('listing', $event)"

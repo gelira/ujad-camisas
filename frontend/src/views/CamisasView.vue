@@ -5,13 +5,13 @@ import { useRoute } from 'vue-router'
 import { useCamisaStore } from '@/stores/camisa'
 import { useRemessaStore } from '@/stores/remessa'
 
+import CamisaForm from '@/components/CamisaForm.vue'
 import CamisasTable from '@/components/CamisasTable.vue'
 import DeleteCamisa from '@/components/DeleteCamisa.vue'
-import CamisaForm from '@/components/CamisaForm.vue'
 
 interface State {
   camisaIdToEdit: string
-  camisaIdToDelete: string 
+  camisaIdToDelete: string
   openForm: boolean
   search: string
   loading: string | boolean
