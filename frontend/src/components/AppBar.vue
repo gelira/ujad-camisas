@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
-import { useRouter } from 'vue-router'
 
+import { useNavigation } from '@/composables/navigation'
 import { useAuthStore } from '@/stores/auth'
 import { useSetorStore } from '@/stores/setor'
 import { removeToken } from '@/utils/token'
@@ -9,9 +9,9 @@ import { removeToken } from '@/utils/token'
 import RelatoriosMenu from './RelatoriosMenu.vue'
 import SetoresMenu from './SetoresMenu.vue'
 
-const router = useRouter()
 const authStore = useAuthStore()
 const setorStore = useSetorStore()
+const navigation = useNavigation()
 
 const state = reactive({
   drawerOpen: false,
@@ -39,7 +39,7 @@ const toggle = () => {
 
 const logout = () => {
   removeToken()
-  router.push({ name: 'login' })
+  navigation.goToLogin()
 }
 </script>
 

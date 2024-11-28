@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
-import { RouterView, useRouter } from 'vue-router'
+import { RouterView } from 'vue-router'
 
+import { useNavigation } from '@/composables/navigation'
 import { useAuthStore } from '@/stores/auth'
 import { useRemessaStore } from '@/stores/remessa'
 import { useSetorStore } from '@/stores/setor'
 
 import AppBar from '@/components/AppBar.vue'
 
-const router = useRouter()
+const navigation = useNavigation()
 const authStore = useAuthStore()
 const setorStore = useSetorStore()
 const remessaStore = useRemessaStore()
@@ -24,7 +25,7 @@ onMounted(() => {
         remessaStore.fetchRemessaAberta()
       ])
     } catch {
-      router.push({ name: 'login' })
+      navigation.goToLogin()
     }
   })()
 })
@@ -32,9 +33,7 @@ onMounted(() => {
 watch(
   () => setorStore.setores,
   (v) => {
-    if (v.length > 0) {
-      router.push({ name: 'camisas', params: { id: v[0].id } })
-    }
+    !!v?.length && navigation.goToCamisas(v[0].id)
   }
 )
 </script>

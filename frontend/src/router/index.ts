@@ -5,24 +5,30 @@ import LoginView from '@/views/LoginView.vue'
 
 const CamisasView = () => import('@/views/CamisasView.vue')
 
+export const ROUTES = {
+  HOME: 'home',
+  LOGIN: 'login',
+  CAMISAS: 'camisas'
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: ROUTES.HOME,
       component: HomeView,
       children: [
         {
           path: 'camisas/:id',
-          name: 'camisas',
+          name: ROUTES.CAMISAS,
           component: CamisasView,
         }
       ]
     },
     {
       path: '/login',
-      name: 'login',
+      name: ROUTES.LOGIN,
       component: LoginView
     }
   ]

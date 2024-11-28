@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
 import { GoogleLogin, type CallbackTypes } from 'vue3-google-login'
 
-import { useAuthStore } from '@/stores/auth'
+import { useNavigation } from '@/composables/navigation'
 import { useAlertStore } from '@/stores/alert'
+import { useAuthStore } from '@/stores/auth'
 import { getToken } from '@/utils/token'
 
 interface State {
@@ -13,14 +13,14 @@ interface State {
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
-const router = useRouter()
 const authStore = useAuthStore()
 const alertStore = useAlertStore()
+const navigation = useNavigation()
 
 const state = reactive<State>({ loading: false })
 
 const navigateHome = () => {
-  router.push({ name: 'home' })
+  navigation.goToHome()
 }
 
 const callback: CallbackTypes.CredentialCallback = ({ credential }) => {

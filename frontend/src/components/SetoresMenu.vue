@@ -1,23 +1,22 @@
 <script setup lang="ts">
-import { useSetorStore } from '@/stores/setor';
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-const props = defineProps<{
-  menuOpen: string[]
-}>()
+import { useNavigation } from '@/composables/navigation'
+import { useSetorStore } from '@/stores/setor'
+
+const props = defineProps<{ menuOpen: string[] }>()
 
 const route = useRoute()
-const router = useRouter()
+const navigation = useNavigation()
 const setorStore = useSetorStore()
 
 const setorId = computed(() => route.params.id as string)
-
 const setorMenuOpen = computed(() => props.menuOpen.includes('setores'))
 
 const navigate = (id: string) => {
   if (id !== setorId.value) {
-    router.push({ name: 'camisas', params: { id } })
+    navigation.goToCamisas(id)
   }
 }
 </script>
