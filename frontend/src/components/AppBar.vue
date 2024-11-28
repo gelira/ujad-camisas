@@ -3,8 +3,10 @@ import { computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
+import { useRemessaStore } from '@/stores/remessa'
 import { useSetorStore } from '@/stores/setor'
 import { removeToken } from '@/utils/token'
+import GerarRelatorioDialog from './GerarRelatorioDialog.vue'
 
 interface State {
   drawerOpen: boolean
@@ -15,6 +17,7 @@ const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const setorStore = useSetorStore()
+const remessaStore = useRemessaStore()
 
 const state = reactive<State>({
   drawerOpen: false,
@@ -39,6 +42,14 @@ const vListItemProps = computed(() => ({
       : { appendIcon: 'mdi-account-circle' }
   )
 }))
+
+const listRemessasComputed = computed(
+  () => remessaStore.remessas.map(({ id, descricao: label }) => ({ id, label }))
+)
+
+const listSetoresComputed = computed(
+  () => setorStore.setores.map(({ id, nome: label }) => ({ id, label }))
+)
 
 const toggle = () => {
   state.drawerOpen = !state.drawerOpen
@@ -92,6 +103,34 @@ const logout = () => {
         />
       </v-list-group>
       <v-divider />
+      <GerarRelatorioDialog
+        title="Gerar relatório - Contagem de pedidos"
+        subtitle="Selecione a remessa"
+        :listValues="listRemessasComputed"
+      >
+        <template v-slot="{ openDialog }">
+          <v-list-item
+            title="Contagem de pedidos"
+            append-icon="mdi-clipboard-list-outline"
+            @click="openDialog"
+          />
+        </template>
+      </GerarRelatorioDialog>
+      <v-divider />
+      <GerarRelatorioDialog
+        title="Gerar relatório - Lista de camisas"
+        subtitle="Selecione o setor"
+        :listValues="listSetoresComputed"
+      >
+        <template v-slot="{ openDialog }">
+          <v-list-item
+            title="Lista de camisas"
+            append-icon="mdi-clipboard-text-outline"
+            @click="openDialog"
+          />
+        </template>
+      </GerarRelatorioDialog>
+      <v-divider />
       <v-list-item
         title="Sair"
         append-icon="mdi-logout"
@@ -108,7 +147,7 @@ const logout = () => {
 }
 
 .setores {
-  max-height: calc(100% - 98px);
+  max-height: calc(100% - 196px);
 
   &.open {
     height: 100%;

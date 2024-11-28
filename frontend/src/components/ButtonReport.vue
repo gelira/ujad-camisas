@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import {
-  apiFetchListingCamisasReport,
   apiFetchCountingCamisasReport,
+  apiFetchListingCamisasReport,
 } from '@/api/reports'
+import { onMounted, ref } from 'vue'
 
 import { useAuthStore } from '@/stores/auth'
 import { useRemessaStore } from '@/stores/remessa'
