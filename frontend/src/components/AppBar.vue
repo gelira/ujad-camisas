@@ -107,6 +107,7 @@ const logout = () => {
         title="Gerar relatório - Contagem de pedidos"
         subtitle="Selecione a remessa"
         :listValues="listRemessasComputed"
+        @generate="console.log('Contagem', $event)"
       >
         <template v-slot="{ openDialog }">
           <v-list-item
@@ -121,6 +122,7 @@ const logout = () => {
         title="Gerar relatório - Lista de camisas"
         subtitle="Selecione o setor"
         :listValues="listSetoresComputed"
+        @generate="console.log('Lista', $event)"
       >
         <template v-slot="{ openDialog }">
           <v-list-item
