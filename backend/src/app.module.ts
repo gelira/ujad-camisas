@@ -25,6 +25,7 @@ import { ReportController } from './controllers/report.controller';
 import { Remessa, RemessaSchema } from './schemas/remessa.schema';
 import { RemessaService } from './services/remessa.service';
 import { RemessaController } from './controllers/remessa.controller';
+import { AuthCode, AuthCodeSchema } from './schemas/auth-code.schema';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { RemessaController } from './controllers/remessa.controller';
       }),
     }),
     MongooseModule.forFeature([
+      { name: AuthCode.name, schema: AuthCodeSchema },
       { name: User.name, schema: UserSchema },
       { name: Setor.name, schema: SetorSchema },
       { name: Modelo.name, schema: ModeloSchema },
