@@ -11,8 +11,9 @@ import {
 } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
 
-import { AuthDTO } from 'src/dto/auth.dto';
+import { AuthDTO, VerifyAuthCodeDTO } from 'src/dto/auth.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthCodeDocument } from 'src/schemas/auth-code.schema';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
@@ -52,6 +53,37 @@ export class AuthController {
     const authCode = await this.authService.generateAuthCode(user.id);
 
     return { id: authCode.id };
+  }
+
+  @Post('code')
+  @HttpCode(HttpStatus.OK)
+  async verifyAuthCode(@Body() dto: VerifyAuthCodeDTO) {
+    let authCodeDocument: AuthCodeDocument;
+
+    try {
+      authCodeDocument = await this.authService.findValidAuthCode(dto.id, dto.code);
+    } catch {
+      throw new UnauthorizedException('Invalid code');
+    }
+
+    const userId = authCodeDocument?.userId;
+
+    try {
+      const user = await this.userService.findById(userId);
+
+      if (!userId || !user || !user.active) {
+        throw '';
+      }
+    } catch {
+      throw new UnauthorizedException('User inactive');
+    }
+
+    const token = await this.authService.generateToken(userId);
+
+    authCodeDocument.active = false;
+    await authCodeDocument.save();
+
+    return { token };
   }
 
   @Post('google')
