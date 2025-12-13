@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -12,7 +13,7 @@ import { RequestUser } from 'src/decorators/request-user.decorator';
 
 import { AuthDTO } from 'src/dto/auth.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { User } from 'src/schemas/user.schema';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
 import { UserService } from 'src/services/user.service';
@@ -31,6 +32,26 @@ export class AuthController {
     const { nome, email, admin, picture } = user;
 
     return { nome, email, admin, picture };
+  }
+
+  @Get('code')
+  @HttpCode(HttpStatus.OK)
+  async generateAuthCode(@Query('email') email: string) {
+    let user: UserDocument;
+
+    try {
+      user = await this.userService.findByEmail(email);
+    } catch {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (!user || !user.active) {
+      throw new UnauthorizedException('User inactive');
+    }
+
+    const authCode = await this.authService.generateAuthCode(user.id);
+
+    return { id: authCode.id };
   }
 
   @Post('google')
