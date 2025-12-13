@@ -17,6 +17,7 @@ import { AuthCodeDocument } from 'src/schemas/auth-code.schema';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
+import { MailService } from 'src/services/mail.service';
 import { UserService } from 'src/services/user.service';
 
 @Controller('auth')
@@ -25,6 +26,7 @@ export class AuthController {
     private googleService: GoogleService,
     private userService: UserService,
     private authService: AuthService,
+    private mailService: MailService,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -51,6 +53,12 @@ export class AuthController {
     }
 
     const authCode = await this.authService.generateAuthCode(user.id);
+
+    await this.mailService.sendEmail(
+      user.email,
+      'UJAD Camisas - Código de autenticação',
+      '<p>Seu código de autenticação é: <b>' + authCode.code + '</b></p>'
+    );
 
     return { id: authCode.id };
   }
