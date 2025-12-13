@@ -1,31 +1,32 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthController } from './controllers/auth.controller';
-import { GoogleService } from './services/google.service';
-import { User, UserSchema } from './schemas/user.schema';
-import { UserService } from './services/user.service';
-import { AuthService } from './services/auth.service';
-import { Setor, SetorSchema } from './schemas/setor.schema';
-import { SetorService } from './services/setor.service';
-import { SetorController } from './controllers/setor.controller';
-import { Modelo, ModeloSchema } from './schemas/modelo.schema';
-import { ModeloService } from './services/modelo.service';
-import { ModeloController } from './controllers/modelo.controller';
-import { Tamanho, TamanhoSchema } from './schemas/tamanho.schema';
-import { TamanhoService } from './services/tamanho.service';
-import { TamanhoController } from './controllers/tamanho.controller';
-import { CamisaService } from './services/camisa.service';
-import { Camisa, CamisaSchema } from './schemas/camisa.schema';
 import { CamisaController } from './controllers/camisa.controller';
-import { ReportService } from './services/report.service';
-import { ReportController } from './controllers/report.controller';
-import { Remessa, RemessaSchema } from './schemas/remessa.schema';
-import { RemessaService } from './services/remessa.service';
+import { ModeloController } from './controllers/modelo.controller';
 import { RemessaController } from './controllers/remessa.controller';
+import { ReportController } from './controllers/report.controller';
+import { SetorController } from './controllers/setor.controller';
+import { TamanhoController } from './controllers/tamanho.controller';
 import { AuthCode, AuthCodeSchema } from './schemas/auth-code.schema';
+import { Camisa, CamisaSchema } from './schemas/camisa.schema';
+import { Modelo, ModeloSchema } from './schemas/modelo.schema';
+import { Remessa, RemessaSchema } from './schemas/remessa.schema';
+import { Setor, SetorSchema } from './schemas/setor.schema';
+import { Tamanho, TamanhoSchema } from './schemas/tamanho.schema';
+import { User, UserSchema } from './schemas/user.schema';
+import { AuthService } from './services/auth.service';
+import { CamisaService } from './services/camisa.service';
+import { GoogleService } from './services/google.service';
+import { MailService } from './services/mail.service';
+import { ModeloService } from './services/modelo.service';
+import { RemessaService } from './services/remessa.service';
+import { ReportService } from './services/report.service';
+import { SetorService } from './services/setor.service';
+import { TamanhoService } from './services/tamanho.service';
+import { UserService } from './services/user.service';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { AuthCode, AuthCodeSchema } from './schemas/auth-code.schema';
     CamisaService,
     ReportService,
     RemessaService,
+    MailService
   ],
 })
 export class AppModule {}
