@@ -1,41 +1,80 @@
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
-import { GoogleLogin, type CallbackTypes } from 'vue3-google-login'
+import { onMounted, ref } from 'vue'
 
 import { useNavigation } from '@/composables/navigation'
 import { useAlertStore } from '@/stores/alert'
 import { useAuthStore } from '@/stores/auth'
 import { getToken } from '@/utils/token'
 
-interface State {
-  loading: boolean | string
-}
-
-const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
-
-const authStore = useAuthStore()
 const alertStore = useAlertStore()
+const authStore = useAuthStore()
 const navigation = useNavigation()
 
-const state = reactive<State>({ loading: false })
+const email = ref('')
+const code = ref('')
+const loading = ref(false)
+const step = ref<'generate' | 'verify'>('generate')
 
 const navigateHome = () => {
   navigation.goToHome()
 }
 
-const callback: CallbackTypes.CredentialCallback = ({ credential }) => {
-  (async () => {
-    state.loading = 'primary'
-
-    try {
-      await authStore.validateGoogleCredential(credential)
-      navigateHome()
-    } catch {
-      alertStore.showAlert('Não foi possível fazer login. Tente novamente.')
-    } finally {
-      state.loading = false
+async function generateStep() {
+  try {
+    await authStore.generateAuthCode({ email: email.value.trim() })
+    
+    step.value = 'verify'
+  
+  } catch (err: any) {
+    let message = 'Ocorreu algum problema. Tente novamente'
+  
+    if (err.status === 400) {
+      message = 'Verifique o email informado'
     }
-  })()
+  
+    alertStore.showAlert(message)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function verifyStep() {
+  try {
+    await authStore.verifyAuthCode({ code: code.value.trim() })
+
+    navigateHome()
+  } catch {
+    alertStore.showAlert('Verifique o código inserido e tente novamente')
+  } finally {
+    loading.value = false
+  }
+}
+
+function click() {
+  if (!email.value) {
+    return
+  }
+
+  loading.value = true
+
+  if (step.value === 'generate') {
+    generateStep()
+  } else {
+    verifyStep()
+  }
+}
+
+function reset() {
+  email.value = ''
+  step.value = 'generate'
+}
+
+function validateEmail(value: string) {
+  return !!value && value.indexOf('@') > 0 || 'Preencha seu email corretamente'
+}
+
+function validateCode(value: string) {
+  return !!value && /^\d{6}$/g.test(value) || 'Preencha o código de 6 dígitos'
 }
 
 onMounted(() => {
@@ -47,30 +86,48 @@ onMounted(() => {
 
 <template>
   <v-container class="h-screen">
-    <v-card
-      :loading="state.loading"
-      elevation="4"
-      rounded
-      border
-    >
+    <v-card elevation="4" rounded border>
       <v-card-title>UJAD Camisas</v-card-title>
       <v-card-text>
-        <strong>Bem-vindo(a)!</strong>
-        <br>
-        Acesse sua conta através do email Google cadastrado.
+        <template v-if="step === 'generate'">
+          <p>Acesse sua conta através do seu email <b>cadastro</b>.</p>
+          <v-text-field
+            label="Email"
+            variant="outlined"
+            validate-on="blur"
+            :rules="[validateEmail]"
+            v-model="email"
+          ></v-text-field>
+        </template>
+        <template v-else>
+          <p>Informe o código enviado para {{ email }}</p>
+          <div class="secondary-actions">
+            <v-btn color="primary" variant="text" @click="generateStep">Reenviar código</v-btn>
+            <v-btn color="primary" variant="text" @click="reset">Trocar email</v-btn>
+          </div>
+          <v-text-field
+            label="Código"
+            variant="outlined"
+            validate-on="blur"
+            :rules="[validateCode]"
+            v-model="code"
+            clearable
+          ></v-text-field>
+        </template>
       </v-card-text>
-      <v-divider />
       <v-card-actions>
-        <GoogleLogin
-          :client-id="CLIENT_ID"
-          :callback="callback"
-        />
+        <v-btn
+          block
+          class="bg-primary"
+          :loading="loading"
+          @click="click"
+        >CONTINUAR</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .v-container {
   display: flex;
   flex-direction: column;
@@ -85,7 +142,7 @@ onMounted(() => {
 }
 
 .v-card-text {
-  padding: 16px;
+  padding: 0 16px;
   font-size: 18px;
   line-height: 28px !important;
   text-align: center;
@@ -94,5 +151,19 @@ onMounted(() => {
 .v-card-actions {
   padding: 16px;
   justify-content: center;
+}
+
+.v-input {
+  margin: 16px 0 0;
+}
+
+.secondary-actions {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0 0;
+
+  :deep(.v-btn__content) {
+    text-transform: none;
+  }
 }
 </style>

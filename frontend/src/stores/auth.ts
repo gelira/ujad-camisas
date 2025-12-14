@@ -1,7 +1,7 @@
-import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
+import { computed, reactive, ref } from 'vue'
 
-import { apiValidateAccessToken, apiValidateGoogleCredential } from '@/api/auth'
+import { apiGetAuthCode, apiPostAuthCode, apiValidateAccessToken, apiValidateGoogleCredential } from '@/api/auth'
 import { removeToken, setToken } from '@/utils/token'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -11,6 +11,8 @@ export const useAuthStore = defineStore('auth', () => {
     picture: '',
     admin: false
   })
+
+  const authCodeId = ref('')
 
   const nome = computed(() => state.nome)
   const email = computed(() => state.email)
@@ -32,6 +34,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   const validateGoogleCredential = async (credential: string) => {
     const { data } = await apiValidateGoogleCredential(credential)
+
+    setToken(data.token)
+  }
+
+  const generateAuthCode = async ({ email }: { email: string }) => {
+    const { data } = await apiGetAuthCode(email)
+    
+    authCodeId.value = data.id
+  }
+
+  const verifyAuthCode = async ({ code }: { code: string}) => {
+    const { data } = await apiPostAuthCode(authCodeId.value, code)
+    
+    authCodeId.value = ''
+
     setToken(data.token)
   }
 
@@ -41,6 +58,8 @@ export const useAuthStore = defineStore('auth', () => {
     picture,
     admin,
     validateAccessToken,
-    validateGoogleCredential
+    validateGoogleCredential,
+    generateAuthCode,
+    verifyAuthCode
   }
 })
