@@ -5,3 +5,13 @@ export class AuthDTO {
   @IsNotEmpty()
   credential: string;
 }
+
+export class VerifyAuthCodeDTO {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  code: string;
+}

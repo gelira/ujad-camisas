@@ -5,16 +5,19 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { RequestUser } from 'src/decorators/request-user.decorator';
 
-import { AuthDTO } from 'src/dto/auth.dto';
+import { AuthDTO, VerifyAuthCodeDTO } from 'src/dto/auth.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { User } from 'src/schemas/user.schema';
+import { AuthCodeDocument } from 'src/schemas/auth-code.schema';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { AuthService } from 'src/services/auth.service';
 import { GoogleService } from 'src/services/google.service';
+import { MailService } from 'src/services/mail.service';
 import { UserService } from 'src/services/user.service';
 
 @Controller('auth')
@@ -23,6 +26,7 @@ export class AuthController {
     private googleService: GoogleService,
     private userService: UserService,
     private authService: AuthService,
+    private mailService: MailService,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -31,6 +35,63 @@ export class AuthController {
     const { nome, email, admin, picture } = user;
 
     return { nome, email, admin, picture };
+  }
+
+  @Get('code')
+  @HttpCode(HttpStatus.OK)
+  async generateAuthCode(@Query('email') email: string) {
+    let user: UserDocument;
+
+    try {
+      user = await this.userService.findByEmail(email);
+    } catch {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (!user || !user.active) {
+      throw new UnauthorizedException('User inactive');
+    }
+
+    const authCode = await this.authService.generateAuthCode(user.id);
+
+    await this.mailService.sendEmail(
+      user.email,
+      'UJAD Camisas - Código de autenticação',
+      '<p>Seu código de autenticação é: <b>' + authCode.code + '</b></p>'
+    );
+
+    return { id: authCode.id };
+  }
+
+  @Post('code')
+  @HttpCode(HttpStatus.OK)
+  async verifyAuthCode(@Body() dto: VerifyAuthCodeDTO) {
+    let authCodeDocument: AuthCodeDocument;
+
+    try {
+      authCodeDocument = await this.authService.findValidAuthCode(dto.id, dto.code);
+    } catch {
+      throw new UnauthorizedException('Invalid code');
+    }
+
+    const userId = authCodeDocument?.userId;
+
+    try {
+      const user = await this.userService.findById(userId);
+
+      if (!userId || !user || !user.active) {
+        throw '';
+      }
+    } catch {
+      throw new UnauthorizedException('User inactive');
+    }
+
+    const token = await this.authService.generateToken(userId);
+
+    authCodeDocument.active = false;
+    await authCodeDocument.save();
+
+    return { token };
   }
 
   @Post('google')

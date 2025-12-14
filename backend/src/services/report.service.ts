@@ -1,18 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { readFileSync } from 'fs';
-import { join } from 'path';
 import Handlebars from 'handlebars';
 import { generatePdf } from 'html-pdf-node-ts';
+import { join } from 'path';
 import { ModeloDocument } from 'src/schemas/modelo.schema';
-import { TamanhoDocument } from 'src/schemas/tamanho.schema';
 import { RemessaDocument } from 'src/schemas/remessa.schema';
 import { SetorDocument } from 'src/schemas/setor.schema';
+import { TamanhoDocument } from 'src/schemas/tamanho.schema';
 
-import { SetorService } from './setor.service';
-import { ModeloService } from './modelo.service';
 import { CamisaService } from './camisa.service';
-import { TamanhoService } from './tamanho.service';
+import { CampoService } from './campo.service';
+import { ModeloService } from './modelo.service';
 import { RemessaService } from './remessa.service';
+import { SetorService } from './setor.service';
+import { TamanhoService } from './tamanho.service';
 
 @Injectable()
 export class ReportService {
@@ -22,6 +23,7 @@ export class ReportService {
     private tamanhoService: TamanhoService,
     private camisaService: CamisaService,
     private remessaService: RemessaService,
+    private campoService: CampoService,
   ) {}
 
   async generateReportPedidosCamisas(remessaId?: string) {
@@ -94,41 +96,41 @@ export class ReportService {
   }
 
   private async countCamisas(remessaId?: string) {
-    const [setores, modelos, tamanhos] = await Promise.all([
-      this.setorService.findAll(),
+    const [campos, modelos, tamanhos] = await Promise.all([
+      this.campoService.findAll(),
       this.modeloService.findAll(),
       this.tamanhoService.findAll(),
     ]);
 
     const data = await Promise.all([
-      this.countCamisasByModelosSetor({ modelos, tamanhos, setorNome: 'Geral', remessaId }),
-      ...setores.map(
-        ({ id, nome }) => 
-          this.countCamisasByModelosSetor({ modelos, tamanhos, setorNome: nome, setorId: id, remessaId }),
+      this.countCamisasByModelosCampo({ modelos, tamanhos, campoNome: 'Geral', remessaId }),
+      ...campos.map(
+        ({ id, nome }) =>
+          this.countCamisasByModelosCampo({ modelos, tamanhos, campoNome: nome, campoId: id, remessaId }),
       ),
     ]);
 
     return data;
   }
 
-  private async countCamisasByModelosSetor({
+  private async countCamisasByModelosCampo({
     modelos,
     tamanhos,
-    setorNome,
-    setorId,
+    campoNome,
+    campoId,
     remessaId,
   }: {
     modelos: ModeloDocument[],
     tamanhos: TamanhoDocument[],
-    setorNome: string,
-    setorId?: string,
+    campoNome: string,
+    campoId?: string,
     remessaId?: string,
   }) {
     const quantidadesModelos = await Promise.all(modelos.map(async (modelo) => {
       const quantidade = await this.countCamisasByTamanhosModelo({
         modelo,
         tamanhos,
-        setorId,
+        campoId,
         remessaId,
     });
 
@@ -136,8 +138,8 @@ export class ReportService {
     }));
 
     return {
-      setor: setorNome,
-      quantidadeSetor: quantidadesModelos.reduce((acc, curr) => acc + curr.quantidadeModelo, 0),
+      campo: campoNome,
+      quantidadeCampo: quantidadesModelos.reduce((acc, curr) => acc + curr.quantidadeModelo, 0),
       quantidadesModelos,
     };
   }
@@ -145,19 +147,25 @@ export class ReportService {
   private async countCamisasByTamanhosModelo({
     modelo,
     tamanhos,
-    setorId,
+    campoId,
     remessaId,
   }: {
     modelo: ModeloDocument,
     tamanhos: TamanhoDocument[],
-    setorId?: string,
+    campoId?: string,
     remessaId?: string,
   }) {
     const quantidadesTamanhos = await Promise.all(tamanhos.map(async (tamanho) => {
+      let setores: string[] = [];
+
+      if (campoId) {
+        setores = (await this.setorService.findByCampo(campoId)).map(({ id }) => id);
+      }
+
       const quantidade = await this.camisaService.countByModeloTamanho({
         modeloId: modelo.id,
         tamanhoId: tamanho.id,
-        setorId,
+        setores,
         remessaId,
     });
 
