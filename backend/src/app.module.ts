@@ -27,6 +27,7 @@ import { ReportService } from './services/report.service';
 import { SetorService } from './services/setor.service';
 import { TamanhoService } from './services/tamanho.service';
 import { UserService } from './services/user.service';
+import { Cidade, CidadeSchema } from './schemas/cidade.schema';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { UserService } from './services/user.service';
       { name: Tamanho.name, schema: TamanhoSchema },
       { name: Camisa.name, schema: CamisaSchema },
       { name: Remessa.name, schema: RemessaSchema },
+      { name: Cidade.name, schema: CidadeSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
