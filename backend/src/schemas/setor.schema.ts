@@ -10,7 +10,7 @@ export class Setor {
   nome: string;
 
   @Prop()
-  cidadeId: string;
+  campoId: string;
 
   @Prop([String])
   responsaveis: string[];

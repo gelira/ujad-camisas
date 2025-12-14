@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 @Schema({
   timestamps: true,
 })
-export class Cidade {
+export class Campo {
   @Prop()
   nome: string;
 
@@ -15,6 +15,6 @@ export class Cidade {
   updatedAt: Date;
 }
 
-export type CidadeDocument = HydratedDocument<Cidade>;
+export type CampoDocument = HydratedDocument<Campo>;
 
-export const CidadeSchema = SchemaFactory.createForClass(Cidade);
+export const CampoSchema = SchemaFactory.createForClass(Campo);
