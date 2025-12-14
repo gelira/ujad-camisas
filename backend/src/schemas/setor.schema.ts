@@ -9,6 +9,9 @@ export class Setor {
   @Prop()
   nome: string;
 
+  @Prop()
+  cidadeId: string;
+
   @Prop([String])
   responsaveis: string[];
 
