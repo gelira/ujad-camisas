@@ -1,6 +1,6 @@
-import { Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { Setor } from 'src/schemas/setor.schema';
 
 @Injectable()
@@ -10,6 +10,13 @@ export class SetorService {
   async findAll() {
     return this.setorModel.find({}).sort({ nome: 1, createdAt: 1 });
   }
+
+  async findByCampo(campoId: string) {
+    return this.setorModel
+      .find({ campoId })
+      .sort({ nome: 1, createdAt: 1 });
+  }
+
 
   async findByResponsavel(id: any) {
     return this.setorModel
