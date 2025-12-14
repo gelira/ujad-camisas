@@ -1,8 +1,8 @@
-import { Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Camisa, CamisaDocument } from 'src/schemas/camisa.schema';
+import { Model } from 'mongoose';
 import { CreateCamisaDTO, UpdateCamisaDTO } from 'src/dto/camisa.dto';
+import { Camisa, CamisaDocument } from 'src/schemas/camisa.schema';
 import { Modelo } from 'src/schemas/modelo.schema';
 import { Tamanho } from 'src/schemas/tamanho.schema';
 
@@ -72,16 +72,16 @@ export class CamisaService {
   async countByModeloTamanho({
     modeloId,
     tamanhoId,
-    setorId,
+    setores,
     remessaId,
   }: {
     modeloId: string,
     tamanhoId: string,
-    setorId?: string,
+    setores: string[],
     remessaId?: string,
   }) {
     return this.camisaModel.countDocuments({
-      ...(setorId && { setorId }),
+      ...(setores.length > 0 && { setorId: { $in: setores } }),
       ...(remessaId && { remessaId }),
       modeloId,
       tamanhoId,
