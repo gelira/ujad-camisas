@@ -23,17 +23,17 @@
       font-size: 14px;
     }
 
-    .summary-setor, .table-header, .table-line {
+    .summary-campo, .table-header, .table-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .summary-setor, .table-header {
+    .summary-campo, .table-header {
       margin: 0 0 16px;
     }
 
-    .summary-setor h2 {
+    .summary-campo h2 {
       font-size: 20px;
       margin: 0;
     }
@@ -77,9 +77,9 @@
       </h3>
       <p class="header-timestamp">Relatório gerado em {{../timestamp}}</p>
 
-      <div class="summary-setor">
-        <h2>{{setor}}</h2>
-        <h2>Total de pedidos: {{quantidadeSetor}}</h2>
+      <div class="summary-campo">
+        <h2>{{campo}}</h2>
+        <h2>Total de pedidos: {{quantidadeCampo}}</h2>
       </div>
 
       {{#if quantidadeSetor}}
