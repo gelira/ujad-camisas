@@ -2,18 +2,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
 @Schema({
-  collection: 'setores',
   timestamps: true,
 })
-export class Setor {
+export class Campo {
   @Prop()
   nome: string;
-
-  @Prop()
-  campoId: string;
-
-  @Prop([String])
-  responsaveis: string[];
 
   @Prop(() => Date)
   createdAt: Date;
@@ -22,6 +15,6 @@ export class Setor {
   updatedAt: Date;
 }
 
-export type SetorDocument = HydratedDocument<Setor>;
+export type CampoDocument = HydratedDocument<Campo>;
 
-export const SetorSchema = SchemaFactory.createForClass(Setor);
+export const CampoSchema = SchemaFactory.createForClass(Campo);

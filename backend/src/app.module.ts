@@ -12,6 +12,7 @@ import { SetorController } from './controllers/setor.controller';
 import { TamanhoController } from './controllers/tamanho.controller';
 import { AuthCode, AuthCodeSchema } from './schemas/auth-code.schema';
 import { Camisa, CamisaSchema } from './schemas/camisa.schema';
+import { Campo, CampoSchema } from './schemas/campo.schema';
 import { Modelo, ModeloSchema } from './schemas/modelo.schema';
 import { Remessa, RemessaSchema } from './schemas/remessa.schema';
 import { Setor, SetorSchema } from './schemas/setor.schema';
@@ -19,6 +20,7 @@ import { Tamanho, TamanhoSchema } from './schemas/tamanho.schema';
 import { User, UserSchema } from './schemas/user.schema';
 import { AuthService } from './services/auth.service';
 import { CamisaService } from './services/camisa.service';
+import { CampoService } from './services/campo.service';
 import { GoogleService } from './services/google.service';
 import { MailService } from './services/mail.service';
 import { ModeloService } from './services/modelo.service';
@@ -46,6 +48,7 @@ import { UserService } from './services/user.service';
       { name: Tamanho.name, schema: TamanhoSchema },
       { name: Camisa.name, schema: CamisaSchema },
       { name: Remessa.name, schema: RemessaSchema },
+      { name: Campo.name, schema: CampoSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -76,7 +79,8 @@ import { UserService } from './services/user.service';
     CamisaService,
     ReportService,
     RemessaService,
-    MailService
+    MailService,
+    CampoService
   ],
 })
 export class AppModule {}
