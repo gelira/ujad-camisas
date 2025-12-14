@@ -20,6 +20,7 @@ import { Tamanho, TamanhoSchema } from './schemas/tamanho.schema';
 import { User, UserSchema } from './schemas/user.schema';
 import { AuthService } from './services/auth.service';
 import { CamisaService } from './services/camisa.service';
+import { CampoService } from './services/campo.service';
 import { GoogleService } from './services/google.service';
 import { MailService } from './services/mail.service';
 import { ModeloService } from './services/modelo.service';
@@ -78,7 +79,8 @@ import { UserService } from './services/user.service';
     CamisaService,
     ReportService,
     RemessaService,
-    MailService
+    MailService,
+    CampoService
   ],
 })
 export class AppModule {}
