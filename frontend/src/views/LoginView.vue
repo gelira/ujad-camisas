@@ -90,7 +90,7 @@ onMounted(() => {
       <v-card-title>UJAD Camisas</v-card-title>
       <v-card-text>
         <template v-if="step === 'generate'">
-          <p>Acesse sua conta através do seu email <b>cadastro</b>.</p>
+          <p>Acesse sua conta através do seu email <b>cadastrado</b>.</p>
           <v-text-field
             label="Email"
             variant="outlined"
