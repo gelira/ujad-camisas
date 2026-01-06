@@ -103,7 +103,7 @@ export class ReportService {
     ]);
 
     const data = await Promise.all([
-      this.countCamisasByModelosCampo({ modelos, tamanhos, campoNome: 'Geral', remessaId }),
+      this.countCamisasByModelosCampo({ modelos, tamanhos, campoNome: 'Geral', remessaId, listarModelosZero: true }),
       ...campos.map(
         ({ id, nome }) =>
           this.countCamisasByModelosCampo({ modelos, tamanhos, campoNome: nome, campoId: id, remessaId }),
@@ -119,12 +119,14 @@ export class ReportService {
     campoNome,
     campoId,
     remessaId,
+    listarModelosZero = false
   }: {
     modelos: ModeloDocument[],
     tamanhos: TamanhoDocument[],
     campoNome: string,
     campoId?: string,
     remessaId?: string,
+    listarModelosZero?: boolean,
   }) {
     const quantidadesModelos = await Promise.all(modelos.map(async (modelo) => {
       const quantidade = await this.countCamisasByTamanhosModelo({
@@ -132,7 +134,7 @@ export class ReportService {
         tamanhos,
         campoId,
         remessaId,
-    });
+      });
 
       return quantidade;
     }));
@@ -140,7 +142,7 @@ export class ReportService {
     return {
       campo: campoNome,
       quantidadeCampo: quantidadesModelos.reduce((acc, curr) => acc + curr.quantidadeModelo, 0),
-      quantidadesModelos,
+      quantidadesModelos: quantidadesModelos.filter(q => listarModelosZero || q.quantidadeModelo > 0),
     };
   }
 
@@ -167,7 +169,7 @@ export class ReportService {
         tamanhoId: tamanho.id,
         setores,
         remessaId,
-    });
+      });
 
       return { tamanho: tamanho.descricao, quantidade };
     }));
