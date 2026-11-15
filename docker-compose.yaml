@@ -1,29 +1,50 @@
 services:
-  db-server:
-    container_name: db-server
-    hostname: db-server
-    image: mongo
-    restart: always
-    volumes:
-      - db-server-volume:/data/db
+  # db-server:
+  #   container_name: db-server
+  #   hostname: db-server
+  #   image: mongo
+  #   restart: always
+  #   volumes:
+  #     - db-server-volume:/data/db
 
-  frontend:
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-    restart: always
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: .
+  #     dockerfile: ./frontend/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 8080:80
+
+  # backend:
+  #   container_name: backend
+  #   build:
+  #     context: .
+  #     dockerfile: ./backend/Dockerfile
+  #   restart: always
+  #   depends_on:
+  #     - db-server
+
+  db:
+    image: postgres:alpine
+    container_name: postgres_db
+    environment:
+      - POSTGRES_DB=teste
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=abc123
     ports:
-      - 8080:80
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
-  backend:
-    container_name: backend
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-    restart: always
+  adminer:
+    image: adminer
+    container_name: adminer_ui
+    ports:
+      - "8080:8080"
     depends_on:
-      - db-server
+      - db
 
 volumes:
-  db-server-volume:
+  # db-server-volume:
+  db_data:
