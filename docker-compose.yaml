@@ -26,7 +26,7 @@ services:
   #     - db-server
 
   db:
-    image: postgres:alpine
+    image: postgres:17-alpine
     container_name: postgres_db
     environment:
       - POSTGRES_DB=teste
