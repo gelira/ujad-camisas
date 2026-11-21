@@ -47,6 +47,9 @@ class AuthCode(Base):
     __tablename__ = "auth_codes"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    uid: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), unique=True, default=uuid.uuid4, nullable=False
+    )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     code: Mapped[str] = mapped_column(String(255), nullable=False)
     active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
