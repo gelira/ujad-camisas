@@ -1,0 +1,15 @@
+[
+  {
+    "field": "Field 1",
+    "sections": [
+      "Section 1"
+    ]
+  },
+  {
+    "field": "Field 2",
+    "sections": [
+      "Section 1",
+      "Section 2"
+    ]
+  }
+]
