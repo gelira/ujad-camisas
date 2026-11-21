@@ -27,6 +27,7 @@ engine = create_async_engine(
 async_session_factory = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
+    autoflush=False,
 )
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
