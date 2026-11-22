@@ -1,15 +1,15 @@
-from datetime import datetime, timedelta, timezone
-
 from fastapi import APIRouter, HTTPException, status
-from sqlalchemy import select
 
-from src.authentication import CurrentUser, create_access_token
+from src.authentication import CurrentUser
 from src.database import DbSession
-from src.models import AuthCode, User
 from src.schemas.auth import (
     GenerateAuthCodeIn, GenerateAuthCodeOut, VerifyAuthCodeIn, VerifyAuthCodeOut, UserInfoOut
 )
-from src.utils import generate_random_digits_sequence
+from src.services.auth_code import (
+    get_valid_auth_code, new_auth_code, set_auth_codes_invalid
+)
+from src.services.token import create_access_token
+from src.services.user import get_active_user_by_email
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -17,8 +17,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/code", response_model=GenerateAuthCodeOut)
 async def generate_auth_code(session: DbSession, body: GenerateAuthCodeIn):
-    result = await session.execute(select(User).where(User.email == body.email))
-    user = result.scalar_one_or_none()
+    user = await get_active_user_by_email(session=session, email=body.email)
     
     if not user:
         raise HTTPException(
@@ -26,30 +25,21 @@ async def generate_auth_code(session: DbSession, body: GenerateAuthCodeIn):
             detail="Invalid credentials",
         )
 
-    code = generate_random_digits_sequence()
-
-    auth_code = AuthCode(
-        code=code,
-        user_id=user.id,
-        expired_at=datetime.now(timezone.utc) + timedelta(minutes=15),
-    )
+    auth_code = new_auth_code(user_id=user.id)
 
     session.add(auth_code)
     await session.flush()
 
     return auth_code
 
+
 @router.post("/code/verify", response_model=VerifyAuthCodeOut)
 async def verify_auth_code(session: DbSession, body: VerifyAuthCodeIn):
-    result = await session.execute(
-        select(AuthCode).where(
-            AuthCode.uid == body.uid,
-            AuthCode.code == body.code,
-            AuthCode.active == True,
-            AuthCode.expired_at > datetime.now(timezone.utc),
-        )
+    auth_code = await get_valid_auth_code(
+        session=session,
+        uid=body.uid,
+        code=body.code
     )
-    auth_code = result.scalar_one_or_none()
 
     if not auth_code:
         raise HTTPException(
@@ -59,11 +49,10 @@ async def verify_auth_code(session: DbSession, body: VerifyAuthCodeIn):
 
     token = create_access_token(user_id=auth_code.user_id)
 
-    auth_code.active = False
-
-    session.add(auth_code)
+    await set_auth_codes_invalid(session=session, user_id=auth_code.user_id)
 
     return { "token": token }
+
 
 @router.get("/me", response_model=UserInfoOut)
 async def get_user_info(user: CurrentUser):
