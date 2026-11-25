@@ -1,0 +1,30 @@
+[
+  {
+    "description": "PP",
+    "order_to_show": 0
+  },
+  {
+    "description": "P",
+    "order_to_show": 1
+  },
+  {
+    "description": "M",
+    "order_to_show": 2
+  },
+  {
+    "description": "G",
+    "order_to_show": 3
+  },
+  {
+    "description": "GG",
+    "order_to_show": 4
+  },
+  {
+    "description": "XG",
+    "order_to_show": 5
+  },
+  {
+    "description": "XGG",
+    "order_to_show": 6
+  }
+]
